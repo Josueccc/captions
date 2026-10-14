@@ -23,12 +23,16 @@ Or load it manually: `about:debugging` → This Firefox → Load Temporary Add-o
    - **Deepgram (cloud)**: fastest (~0.6 s behind the audio); needs an API key.
    - **Local server (WhisperLiveKit)**: Whisper on your own GPU/CPU, free and
      private but slower (1–4 s). See [server/README.md](server/README.md).
-2. On a page with a video, click the toolbar icon → **Start captions**, or press
+2. For DRM-protected sites (Netflix, Disney+, Prime), install the system-audio
+   companion once: `./companion/install.sh` (Linux/PipeWire, see
+   [companion/README.md](companion/README.md)). It's used automatically for
+   videos with DRM.
+3. On a page with a video, click the toolbar icon → **Start captions**, or press
    **Alt+Shift+C**.
 
 Use the **Test signal** provider to check that audio capture works on a site
-without spending API credit: it shows the loudness instead of text. DRM sites
-(Netflix, Disney+, Prime) give silence; they'll need the system-audio companion.
+without spending API credit: it shows the loudness instead of text. Reading a
+DRM video from the page gives nothing; the companion route does.
 
 ## End-to-end harness
 
@@ -46,7 +50,12 @@ e2e/.venv/bin/python e2e/harness.py --provider deepgram --lang fr --seconds 60 \
 ./e2e/download-clips.sh                  # speech clips, for repeatable comparisons
 e2e/.venv/bin/python e2e/harness.py --provider local-server --lang fr --seconds 45 \
   --url 'http://127.0.0.1:8765/index.html?src=fr.webm'
+e2e/.venv/bin/python e2e/harness.py --audio-source tab   # through the companion
 ```
+
+To keep the test browser quiet, send it to a null sink:
+`pactl load-module module-null-sink sink_name=captions_test` and run the harness
+with `PULSE_SINK=captions_test`.
 
 Deepgram runs read `DEEPGRAM_API_KEY` from the environment or `e2e/.env`
 (gitignored). The **Show caption latency** setting (forced on by the harness)
@@ -60,9 +69,11 @@ content script (per tab)                    background                    provid
 │ AudioCapture             │ ────────► │ Session            │ ─────► │ Deepgram WS  │
 │  mozCaptureStream →      │  audio +  │  MediaClock:       │  PCM   │ WhisperLive- │
 │  worklet → 16k Int16     │  mediaTime│  stream → video t  │ ◄───── │  Kit (local) │
-│ CaptionStore (per video) │ ◄──────── │                    │segments│ companion …  │
-│ Overlay (shadow DOM)     │  segments └────────────────────┘        └──────────────┘
-└──────────────────────────┘
+│ CaptionStore (per video) │ ◄──────── │                    │segments│              │
+│ Overlay (shadow DOM)     │  segments │  Companion ◄───────┼─ native messaging ─┐   │
+└──────────────────────────┘           └────────────────────┘        └──────────│───┘
+   DRM videos: no AudioCapture; the content script sends            companion/: pw-record
+   clock marks (currentTime, rate, playing) instead                 on Firefox's stream
 ```
 
 - `src/providers/` — each provider implements `Transcriber` (`types.ts`) and is
@@ -71,6 +82,10 @@ content script (per tab)                    background                    provid
   and the local WhisperLiveKit server use.
 - The manifest sets its own CSP: MV3's default adds `upgrade-insecure-requests`,
   which silently turns `ws://localhost` into `wss://` and breaks the local server.
+- DRM videos take the *system* route: the companion records Firefox's output
+  from PipeWire and the background places each chunk on the video timeline
+  from its arrival time and the latest clock mark. The page's `<video>` is never
+  touched there, since `mozCaptureStream()` would take its audio off the speakers.
 - Providers report times in *stream* seconds; `MediaClock` maps them to
   `video.currentTime` using the media time + playback rate attached to every
   audio chunk, so seeking, pausing and slow playback keep captions in sync, and

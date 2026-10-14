@@ -19,6 +19,20 @@
           <small id="provider-description"></small>
         </label>
         <fieldset id="provider-fields"></fieldset>
+        <label>
+          <span>Audio source</span>
+          <select id="audio-source">
+            <option value="auto">Automatic: the video, or the companion for DRM videos</option>
+            <option value="page">The video on the page</option>
+            <option value="tab">Companion: this tab's audio</option>
+            <option value="system">Companion: all system audio</option>
+          </select>
+          <small>
+            DRM-protected videos (Netflix, Disney+, Prime…) can't be read from the page; the
+            system-audio companion records them from the sound output instead. Install it once with
+            companion/install.sh (Linux with PipeWire).
+          </small>
+        </label>
         <label class="check">
           <input type="checkbox" id="debug" />
           <span>Show caption latency (debug)</span>

@@ -110,6 +110,8 @@ def main():
     parser.add_argument('--start-at', type=float, help='seek the video here before starting (for YouTube, prefer &t= in the URL)')
     parser.add_argument('--options', default='{}', help='provider options as JSON, e.g. \'{"model":"nova-2"}\'')
     parser.add_argument('--shot-every', type=float, default=5, help='screenshot interval in seconds (0 = none)')
+    parser.add_argument('--audio-source', default='auto', choices=['auto', 'page', 'tab', 'system'],
+                        help='tab/system record through the companion (run companion/install.sh first)')
     parser.add_argument('--headed', action='store_true')
     args = parser.parse_args()
 
@@ -124,6 +126,7 @@ def main():
     driver, logs = launch(headless=not args.headed)
     try:
         set_settings(driver, {'provider': args.provider, 'language': args.lang, 'debug': True,
+                              'audioSource': args.audio_source,
                               'providerOptions': {args.provider: provider_options}})
         driver.get(args.url)
         time.sleep(3)

@@ -9,6 +9,7 @@ const providerDescription = document.getElementById('provider-description')!;
 const providerFields = document.getElementById('provider-fields')!;
 const saved = document.getElementById('saved')!;
 const debugCheckbox = document.getElementById('debug') as HTMLInputElement;
+const audioSourceSelect = document.getElementById('audio-source') as HTMLSelectElement;
 
 let settings: Settings;
 
@@ -62,6 +63,7 @@ async function init(): Promise<void> {
   for (const provider of PROVIDERS) providerSelect.append(option(provider.id, provider.label));
   languageSelect.value = settings.language;
   debugCheckbox.checked = settings.debug;
+  audioSourceSelect.value = settings.audioSource;
   providerSelect.value = getProvider(settings.provider) ? settings.provider : PROVIDERS[0].id;
   renderProviderFields(getProvider(providerSelect.value)!);
 }
@@ -81,6 +83,7 @@ form.addEventListener('submit', async (event) => {
     language: languageSelect.value,
     provider: provider.id,
     debug: debugCheckbox.checked,
+    audioSource: audioSourceSelect.value as Settings['audioSource'],
     providerOptions: { ...settings.providerOptions, [provider.id]: values },
   };
   await saveSettings(settings);

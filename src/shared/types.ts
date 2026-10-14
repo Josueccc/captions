@@ -28,11 +28,23 @@ export interface Segment {
 
 export type SessionStatus = 'idle' | 'connecting' | 'running' | 'error';
 
+/**
+ * Where the audio comes from: the page's <video> element, or the system-audio
+ * companion (for DRM-protected videos, which the page can't capture).
+ */
+export type AudioRoute = 'page' | 'system';
+
 /** Content script -> background, over the transcription port. */
 export type ToBackground =
-  | { type: 'start' }
+  /** title: the page title, which names the tab's audio stream for the companion. */
+  | { type: 'start'; route: AudioRoute; source: CompanionSource; title: string }
   /** pcm: base64 of Int16 little-endian samples. mediaTime: video time at the first sample. */
   | { type: 'audio'; pcm: string; mediaTime: number; rate: number }
+  /**
+   * Video position at wall-clock time `at` (Date.now()), sent several times a
+   * second in the system route so the background can place companion audio.
+   */
+  | { type: 'clock'; mediaTime: number; rate: number; playing: boolean; at: number; title: string }
   /** Audio is about to jump (pause/seek/new video): finish the current utterance. */
   | { type: 'flush' }
   | { type: 'ping' };
@@ -40,7 +52,12 @@ export type ToBackground =
 /** Background -> content script, over the transcription port. */
 export type ToContent =
   | { type: 'segment'; segment: Segment }
-  | { type: 'status'; status: SessionStatus; message?: string };
+  | { type: 'status'; status: SessionStatus; message?: string }
+  /** Transient information for the overlay (e.g. what the companion is recording). */
+  | { type: 'info'; message: string };
+
+/** What the companion records: the tab's own audio stream, or everything the system plays. */
+export type CompanionSource = 'tab' | 'system';
 
 /** Popup/background -> content script, via tabs.sendMessage. */
 export type TabRequest = { type: 'toggle' } | { type: 'get-state' };
