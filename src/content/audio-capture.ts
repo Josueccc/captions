@@ -52,17 +52,30 @@ function getGraph(video: CapturableVideo): Graph {
   return graph;
 }
 
+/**
+ * Copies a typed array that came from the page (the worklet's messages belong
+ * to the page's compartment). Firefox's Xray wrappers allow reading elements
+ * but deny `.constructor`, which typed-array constructors and `.buffer` views
+ * touch, so copy element by element into an array this script owns.
+ */
+function copyFromPage(data: ArrayLike<number>): Int16Array<ArrayBuffer> {
+  const copy = new Int16Array(data.length);
+  for (let i = 0; i < copy.length; i++) copy[i] = data[i];
+  return copy;
+}
+
 /** Streams the video's audio as 16 kHz mono Int16 chunks. */
 export class AudioCapture {
   private node?: AudioNode;
   private sink?: GainNode;
   private watchdog?: ReturnType<typeof setTimeout>;
   private receivedAudio = false;
+  private reportedError = false;
   method?: 'worklet' | 'script-processor';
 
   constructor(
     private readonly video: HTMLVideoElement,
-    private readonly onChunk: (pcm: Int16Array) => void,
+    private readonly onChunk: (pcm: Int16Array<ArrayBuffer>) => void,
   ) {}
 
   async start(): Promise<void> {
@@ -96,7 +109,7 @@ export class AudioCapture {
     graph.workletLoaded ??= graph.ctx.audioWorklet.addModule(browser.runtime.getURL('pcm-worklet.js'));
     await graph.workletLoaded;
     const node = new AudioWorkletNode(graph.ctx, 'pcm-downsampler');
-    node.port.onmessage = (event: MessageEvent<ArrayBuffer>) => this.emit(new Int16Array(event.data));
+    node.port.onmessage = (event: MessageEvent<Int16Array>) => this.emit(copyFromPage(event.data));
     this.connect(graph, node);
     this.method = 'worklet';
   }
@@ -135,8 +148,13 @@ export class AudioCapture {
     this.sink = undefined;
   }
 
-  private emit(chunk: Int16Array): void {
-    this.receivedAudio = true;
-    this.onChunk(chunk);
+  private emit(chunk: Int16Array<ArrayBuffer>): void {
+    try {
+      this.onChunk(chunk);
+      this.receivedAudio = true;
+    } catch (err) {
+      if (!this.reportedError) console.error('[captions] Failed to handle an audio chunk', err);
+      this.reportedError = true;
+    }
   }
 }

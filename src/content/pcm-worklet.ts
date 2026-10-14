@@ -8,7 +8,7 @@ declare function registerProcessor(name: string, processor: unknown): void;
 
 class PcmDownsampler extends AudioWorkletProcessor {
   private readonly downsampler = new Downsampler(sampleRate, CHUNK_SAMPLES, (chunk) =>
-    this.port.postMessage(chunk.buffer, [chunk.buffer]),
+    this.port.postMessage(chunk, [chunk.buffer]),
   );
 
   process(inputs: Float32Array[][]): boolean {

@@ -11,13 +11,13 @@ export class Downsampler {
   private acc = 0;
   private accCount = 0;
   private pos = 0;
-  private out: Int16Array;
+  private out: Int16Array<ArrayBuffer>;
   private outCount = 0;
 
   constructor(
     inputRate: number,
     private readonly chunkSize: number,
-    private readonly onChunk: (chunk: Int16Array) => void,
+    private readonly onChunk: (chunk: Int16Array<ArrayBuffer>) => void,
   ) {
     this.ratio = inputRate / SAMPLE_RATE;
     this.out = new Int16Array(chunkSize);
