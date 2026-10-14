@@ -3,12 +3,15 @@ export interface Settings {
   language: string;
   /** Per-provider option values, keyed by provider id then field key. */
   providerOptions: Record<string, Record<string, string>>;
+  /** Show caption latency on the overlay and expose it as data-captions-* attributes. */
+  debug: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   provider: 'deepgram',
   language: 'fr',
   providerOptions: {},
+  debug: false,
 };
 
 export const LANGUAGES: [code: string, label: string][] = [

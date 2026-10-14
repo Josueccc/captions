@@ -1,8 +1,9 @@
 import { Downsampler } from '../shared/downsampler';
 import { CHUNK_SAMPLES } from '../shared/types';
 
-/** If the worklet produces nothing this long while playing, fall back. */
-const WORKLET_WATCHDOG_MS = 2500;
+/** If the worklet produces nothing over this much actual playback, fall back. */
+const WORKLET_WATCHDOG_PLAYED_SECONDS = 2;
+const WATCHDOG_POLL_MS = 500;
 
 type CapturableVideo = HTMLVideoElement & {
   mozCaptureStream?: () => MediaStream;
@@ -68,7 +69,7 @@ function copyFromPage(data: ArrayLike<number>): Int16Array<ArrayBuffer> {
 export class AudioCapture {
   private node?: AudioNode;
   private sink?: GainNode;
-  private watchdog?: ReturnType<typeof setTimeout>;
+  private watchdog?: ReturnType<typeof setInterval>;
   private receivedAudio = false;
   private reportedError = false;
   method?: 'worklet' | 'script-processor';
@@ -87,13 +88,25 @@ export class AudioCapture {
 
     try {
       await this.attachWorklet(graph);
-      this.watchdog = setTimeout(() => {
-        if (!this.receivedAudio && !this.video.paused) {
+      console.info('[captions] capturing audio with AudioWorklet');
+      // Judge by playback progress, not wall time: the page may still be
+      // buffering (or showing an ad) when captions start.
+      let played = 0;
+      let lastTime = this.video.currentTime;
+      this.watchdog = setInterval(() => {
+        const now = this.video.currentTime;
+        const delta = now - lastTime;
+        lastTime = now;
+        if (delta > 0 && delta < 2) played += delta;
+        if (this.receivedAudio) {
+          clearInterval(this.watchdog);
+        } else if (played >= WORKLET_WATCHDOG_PLAYED_SECONDS) {
+          clearInterval(this.watchdog);
           console.warn('[captions] AudioWorklet produced no audio; falling back to ScriptProcessor');
           this.detach();
           this.attachScriptProcessor(graph);
         }
-      }, WORKLET_WATCHDOG_MS);
+      }, WATCHDOG_POLL_MS);
     } catch (err) {
       console.warn('[captions] AudioWorklet unavailable; falling back to ScriptProcessor', err);
       this.attachScriptProcessor(graph);
@@ -101,7 +114,7 @@ export class AudioCapture {
   }
 
   stop(): void {
-    clearTimeout(this.watchdog);
+    clearInterval(this.watchdog);
     this.detach();
   }
 

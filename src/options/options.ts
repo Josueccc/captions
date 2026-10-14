@@ -8,6 +8,7 @@ const providerSelect = document.getElementById('provider') as HTMLSelectElement;
 const providerDescription = document.getElementById('provider-description')!;
 const providerFields = document.getElementById('provider-fields')!;
 const saved = document.getElementById('saved')!;
+const debugCheckbox = document.getElementById('debug') as HTMLInputElement;
 
 let settings: Settings;
 
@@ -60,6 +61,7 @@ async function init(): Promise<void> {
   for (const [code, label] of LANGUAGES) languageSelect.append(option(code, `${label} (${code})`));
   for (const provider of PROVIDERS) providerSelect.append(option(provider.id, provider.label));
   languageSelect.value = settings.language;
+  debugCheckbox.checked = settings.debug;
   providerSelect.value = getProvider(settings.provider) ? settings.provider : PROVIDERS[0].id;
   renderProviderFields(getProvider(providerSelect.value)!);
 }
@@ -78,6 +80,7 @@ form.addEventListener('submit', async (event) => {
     ...settings,
     language: languageSelect.value,
     provider: provider.id,
+    debug: debugCheckbox.checked,
     providerOptions: { ...settings.providerOptions, [provider.id]: values },
   };
   await saveSettings(settings);

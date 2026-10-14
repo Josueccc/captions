@@ -1,4 +1,5 @@
 import { int16ToBase64 } from '../shared/encoding';
+import { loadSettings } from '../shared/settings';
 import {
   PORT_NAME,
   SAMPLE_RATE,
@@ -10,9 +11,11 @@ import {
 } from '../shared/types';
 import { AudioCapture } from './audio-capture';
 import { CaptionStore } from './caption-store';
+import { LatencyMeter } from './latency';
 import { Overlay } from './overlay';
 
 const PING_INTERVAL_MS = 10_000;
+const DEBUG_REFRESH_MS = 500;
 
 /** Captions are cached per video for the life of the page. */
 const stores = new Map<string, CaptionStore>();
@@ -56,6 +59,10 @@ class LiveCaptions {
   private frame = 0;
   private readonly pingTimer: ReturnType<typeof setInterval>;
   private stopped = false;
+  private debug = false;
+  private readonly latency = new LatencyMeter();
+  private debugTimer?: ReturnType<typeof setInterval>;
+  private shownText = '';
 
   constructor(private readonly video: HTMLVideoElement) {
     this.overlay = new Overlay(video);
@@ -70,9 +77,16 @@ class LiveCaptions {
     video.addEventListener('pause', this.flush);
     video.addEventListener('seeking', this.flush);
     this.frame = requestAnimationFrame(this.tick);
+    void loadSettings().then((settings) => {
+      this.debug = settings.debug;
+      if (this.debug && !this.stopped) this.debugTimer = setInterval(this.showDebug, DEBUG_REFRESH_MS);
+    });
   }
 
   stop(): void {
+    clearInterval(this.debugTimer);
+    delete document.documentElement.dataset.captionsLag;
+    delete document.documentElement.dataset.captionsText;
     this.stopped = true;
     cancelAnimationFrame(this.frame);
     clearInterval(this.pingTimer);
@@ -84,8 +98,14 @@ class LiveCaptions {
   }
 
   private onMessage(msg: ToContent): void {
-    if (msg.type === 'segment') this.store.upsert(msg.segment);
-    else this.onStatus(msg.status, msg.message);
+    if (msg.type === 'segment') {
+      this.store.upsert(msg.segment);
+      if (this.debug && msg.segment.words && !this.video.paused) {
+        this.latency.record(msg.segment.words, this.video.currentTime);
+      }
+    } else {
+      this.onStatus(msg.status, msg.message);
+    }
   }
 
   private onStatus(status: SessionStatus, message?: string): void {
@@ -96,7 +116,7 @@ class LiveCaptions {
         this.overlay.setStatus('Connecting…');
         break;
       case 'running':
-        this.overlay.setStatus('● Live captions', 'info', 2000);
+        if (!this.debug) this.overlay.setStatus('● Live captions', 'info', 2000);
         break;
       case 'error':
         this.overlay.setStatus(message ?? 'Transcription error', 'error');
@@ -127,6 +147,7 @@ class LiveCaptions {
 
   private readonly flush = () => {
     this.store.newRun();
+    this.latency.reset();
     this.send({ type: 'flush' });
   };
 
@@ -144,8 +165,21 @@ class LiveCaptions {
     }
     this.overlay.layout();
     const t = this.video.currentTime;
-    this.overlay.showSegment(this.store.at(t), t);
+    const segment = this.store.at(t);
+    this.overlay.showSegment(segment, t);
+    this.shownText = segment?.text ?? '';
     this.frame = requestAnimationFrame(this.tick);
+  };
+
+  /** Latency readout on the overlay, mirrored to data attributes for the e2e harness. */
+  private readonly showDebug = () => {
+    if (this.status === 'error') return;
+    const median = this.latency.median;
+    const lag = median === undefined ? '–' : `${median.toFixed(2)} s`;
+    this.overlay.setStatus(`lag ${lag} (median of ${this.latency.count} words)`);
+    const data = document.documentElement.dataset;
+    data.captionsLag = median?.toFixed(3) ?? '';
+    data.captionsText = this.shownText;
   };
 
   private send(msg: ToBackground): void {

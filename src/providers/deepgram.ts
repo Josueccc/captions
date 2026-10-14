@@ -68,7 +68,11 @@ class DeepgramTranscriber implements Transcriber {
       endpointing: '300',
       utterance_end_ms: '1000',
     });
-    for (const [key, value] of new URLSearchParams(extraParams)) params.append(key, value);
+    // Extra params override the defaults; keyterm/keywords may repeat.
+    for (const [key, value] of new URLSearchParams(extraParams)) {
+      if (key === 'keyterm' || key === 'keywords') params.append(key, value);
+      else params.set(key, value);
+    }
 
     this.events.status('connecting');
     // Browsers can't set an Authorization header on WebSockets; Deepgram

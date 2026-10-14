@@ -34,6 +34,17 @@ select {
   border-radius: 6px;
   font: inherit;
 }
+label.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+label.check input {
+  width: auto;
+}
+label.check span {
+  margin: 0;
+}
 small,
 .note {
   display: block;
