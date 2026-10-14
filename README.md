@@ -19,8 +19,10 @@ Or load it manually: `about:debugging` → This Firefox → Load Temporary Add-o
 
 ## Use
 
-1. Open the extension's settings, pick the audio language and a provider
-   (Deepgram needs an API key).
+1. Open the extension's settings, pick the audio language and a provider:
+   - **Deepgram (cloud)**: fastest (~0.6 s behind the audio); needs an API key.
+   - **Local server (WhisperLiveKit)**: Whisper on your own GPU/CPU, free and
+     private but slower (1–4 s). See [server/README.md](server/README.md).
 2. On a page with a video, click the toolbar icon → **Start captions**, or press
    **Alt+Shift+C**.
 
@@ -41,6 +43,9 @@ npm run build
 e2e/.venv/bin/python e2e/harness.py      # test-signal provider on the local video
 e2e/.venv/bin/python e2e/harness.py --provider deepgram --lang fr --seconds 60 \
   --url 'https://www.youtube.com/watch?v=...'
+./e2e/download-clips.sh                  # speech clips, for repeatable comparisons
+e2e/.venv/bin/python e2e/harness.py --provider local-server --lang fr --seconds 45 \
+  --url 'http://127.0.0.1:8765/index.html?src=fr.webm'
 ```
 
 Deepgram runs read `DEEPGRAM_API_KEY` from the environment or `e2e/.env`
@@ -53,15 +58,19 @@ reports how long after a word is spoken it first appears on screen.
 content script (per tab)                    background                    provider
 ┌──────────────────────────┐   port    ┌────────────────────┐        ┌──────────────┐
 │ AudioCapture             │ ────────► │ Session            │ ─────► │ Deepgram WS  │
-│  mozCaptureStream →      │  audio +  │  MediaClock:       │  PCM   │ (local server│
-│  worklet → 16k Int16     │  mediaTime│  stream → video t  │ ◄───── │  companion,  │
-│ CaptionStore (per video) │ ◄──────── │                    │segments│  WASM … next)│
+│  mozCaptureStream →      │  audio +  │  MediaClock:       │  PCM   │ WhisperLive- │
+│  worklet → 16k Int16     │  mediaTime│  stream → video t  │ ◄───── │  Kit (local) │
+│ CaptionStore (per video) │ ◄──────── │                    │segments│ companion …  │
 │ Overlay (shadow DOM)     │  segments └────────────────────┘        └──────────────┘
 └──────────────────────────┘
 ```
 
 - `src/providers/` — each provider implements `Transcriber` (`types.ts`) and is
   listed in `registry.ts`; its `fields` drive the options form automatically.
+  `deepgram-stream.ts` speaks the Deepgram live protocol, which both Deepgram
+  and the local WhisperLiveKit server use.
+- The manifest sets its own CSP: MV3's default adds `upgrade-insecure-requests`,
+  which silently turns `ws://localhost` into `wss://` and breaks the local server.
 - Providers report times in *stream* seconds; `MediaClock` maps them to
   `video.currentTime` using the media time + playback rate attached to every
   audio chunk, so seeking, pausing and slow playback keep captions in sync, and

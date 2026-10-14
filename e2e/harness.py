@@ -5,6 +5,7 @@ Sets debug mode, so the latency readout is printed too.
 
   e2e/.venv/bin/python e2e/harness.py                      # local test video, test-signal provider
   e2e/.venv/bin/python e2e/harness.py --url URL --provider deepgram --lang en --seconds 30
+  e2e/.venv/bin/python e2e/harness.py --provider local-server --lang fr   # start ./server/run.sh first
 
 DEEPGRAM_API_KEY is read from the environment or e2e/.env.
 """
