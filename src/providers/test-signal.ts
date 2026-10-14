@@ -42,7 +42,9 @@ class TestSignalTranscriber implements Transcriber {
       db < SILENCE_DB
         ? `🔇 silence (${start.toFixed(0)}–${end.toFixed(0)} s) — DRM-protected or muted?`
         : `🔊 ${db.toFixed(1)} dB (${start.toFixed(0)}–${end.toFixed(0)} s)`;
-    this.events.segment({ id: `test-${this.count++}`, text, start, end, final: true });
+    // One "word" spanning the window, so debug mode measures the pipeline's own delay.
+    const words = [{ text, start, end }];
+    this.events.segment({ id: `test-${this.count++}`, text, start, end, words, final: true });
     this.windowStart = end;
     this.samples = 0;
     this.sumSquares = 0;

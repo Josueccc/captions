@@ -1,3 +1,7 @@
 node_modules/
 dist/
 artifacts/
+e2e/.venv/
+e2e/.env
+e2e/shots/
+e2e/site/*.webm

@@ -28,6 +28,25 @@ Use the **Test signal** provider to check that audio capture works on a site
 without spending API credit: it shows the loudness instead of text. DRM sites
 (Netflix, Disney+, Prime) give silence; they'll need the system-audio companion.
 
+## End-to-end harness
+
+`e2e/harness.py` drives headless Firefox with `dist/` loaded: it starts captions
+on a page, prints the caption text and measured latency as they change, and
+saves screenshots to `e2e/shots/`.
+
+```sh
+python3 -m venv e2e/.venv && e2e/.venv/bin/pip install -r e2e/requirements.txt
+./e2e/make-test-video.sh                 # local test video (needs ffmpeg)
+npm run build
+e2e/.venv/bin/python e2e/harness.py      # test-signal provider on the local video
+e2e/.venv/bin/python e2e/harness.py --provider deepgram --lang fr --seconds 60 \
+  --url 'https://www.youtube.com/watch?v=...'
+```
+
+Deepgram runs read `DEEPGRAM_API_KEY` from the environment or `e2e/.env`
+(gitignored). The **Show caption latency** setting (forced on by the harness)
+reports how long after a word is spoken it first appears on screen.
+
 ## Architecture
 
 ```
