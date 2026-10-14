@@ -1,0 +1,84 @@
+import { getProvider } from '../providers/registry';
+import { LANGUAGES, loadSettings } from '../shared/settings';
+import type { TabRequest, TabState } from '../shared/types';
+
+const summary = document.getElementById('summary')!;
+const message = document.getElementById('message')!;
+const toggle = document.getElementById('toggle') as HTMLButtonElement;
+const grant = document.getElementById('grant') as HTMLButtonElement;
+const ALL_SITES = { origins: ['<all_urls>'] };
+
+async function activeTabId(): Promise<number | undefined> {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+  return tab?.id;
+}
+
+async function request(req: TabRequest): Promise<TabState | null> {
+  const tabId = await activeTabId();
+  if (tabId === undefined) return null;
+  try {
+    return (await browser.tabs.sendMessage(tabId, req)) as TabState;
+  } catch {
+    return null; // No content script on this page (about:, addons.mozilla.org, not yet reloaded…)
+  }
+}
+
+function render(state: TabState | null): void {
+  message.className = '';
+  toggle.classList.remove('stop');
+  if (!state) {
+    toggle.disabled = true;
+    message.textContent = 'Captions are not available on this page. If you just installed the extension, reload the tab.';
+    return;
+  }
+  if (!state.hasVideo && !state.active) {
+    toggle.disabled = true;
+    message.textContent = 'No video found on this page.';
+    return;
+  }
+  toggle.disabled = false;
+  toggle.textContent = state.active ? 'Stop captions' : 'Start captions';
+  toggle.classList.toggle('stop', state.active);
+  if (state.status === 'error') {
+    message.className = 'error';
+    message.textContent = state.message ?? 'Transcription error';
+  } else {
+    message.textContent = { idle: '', connecting: 'Connecting…', running: 'Live' }[state.status];
+  }
+}
+
+async function init(): Promise<void> {
+  const settings = await loadSettings();
+  const provider = getProvider(settings.provider);
+  const language = LANGUAGES.find(([code]) => code === settings.language)?.[1] ?? settings.language;
+  summary.textContent = `${language} · ${provider?.label ?? 'no provider selected'}`;
+
+  // Firefox MV3 lets users withhold host permissions; without them the content script never loads.
+  if (!(await browser.permissions.contains(ALL_SITES))) {
+    grant.hidden = false;
+    toggle.disabled = true;
+    message.textContent = 'The extension needs access to websites to read video audio.';
+    return;
+  }
+  render(await request({ type: 'get-state' }));
+}
+
+toggle.addEventListener('click', async () => {
+  toggle.disabled = true;
+  render(await request({ type: 'toggle' }));
+});
+
+grant.addEventListener('click', async () => {
+  if (await browser.permissions.request(ALL_SITES)) {
+    grant.hidden = true;
+    message.textContent = 'Access granted. Reload the tab to use captions.';
+  }
+});
+
+document.getElementById('options')!.addEventListener('click', (event) => {
+  event.preventDefault();
+  void browser.runtime.openOptionsPage();
+  window.close();
+});
+
+void init();

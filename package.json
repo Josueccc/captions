@@ -1,0 +1,21 @@
+{
+  "name": "captions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Live captions that match the audio, for language learning",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "dev": "web-ext run --source-dir dist",
+    "lint": "web-ext lint --source-dir dist",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest"
+  },
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^143.0.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "web-ext": "^10.7.0"
+  }
+}

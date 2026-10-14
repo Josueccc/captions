@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Captions",
+  "version": "0.1.0",
+  "description": "Live captions transcribed from the actual audio, for language learning.",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Captions",
+    "default_icon": "icons/icon.svg"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["pcm-worklet.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "toggle-captions": {
+      "suggested_key": { "default": "Alt+Shift+C" },
+      "description": "Start/stop live captions on the current tab"
+    }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "captions@zerathul.local",
+      "strict_min_version": "128.0"
+    }
+  }
+}

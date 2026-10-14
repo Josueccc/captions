@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light dark;
+  --accent: #1f6feb;
+  --error: #d1242f;
+  --muted: #6e7781;
+}
+body {
+  width: 280px;
+  margin: 0;
+  padding: 14px;
+  font: 14px system-ui, sans-serif;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+h1 {
+  font-size: 16px;
+  margin: 0;
+}
+p {
+  margin: 10px 0;
+}
+p:empty {
+  display: none;
+}
+.muted {
+  color: var(--muted);
+}
+.error {
+  color: var(--error);
+}
+button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button.stop {
+  background: var(--error);
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+}
+a {
+  color: var(--accent);
+}
