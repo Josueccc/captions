@@ -31,6 +31,7 @@ import time
 SAMPLE_RATE = 16000
 CHUNK_BYTES = SAMPLE_RATE // 10 * 2  # 100 ms of Int16
 POLL_SECONDS = 1.0
+UNTITLED = {'', 'AudioStream'}
 
 out_lock = threading.Lock()
 
@@ -91,7 +92,15 @@ def firefox_streams(objects):
 
 
 def score(stream, title):
-    return (2 if title and stream['title'] == title else 0) + (1 if stream['running'] else 0)
+    # Firefox names a tab's stream after the page, except for DRM audio, which plays
+    # through a generic "AudioStream". A stream named after another page isn't ours.
+    if title and stream['title'] == title:
+        named = 2
+    elif stream['title'] in UNTITLED:
+        named = 1
+    else:
+        named = 0
+    return (named, stream['running'])
 
 
 class Recorder:
