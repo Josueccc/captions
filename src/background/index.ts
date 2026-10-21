@@ -2,7 +2,7 @@ import { getProvider } from '../providers/registry';
 import { resolveOptions, type Transcriber } from '../providers/types';
 import { base64ToInt16 } from '../shared/encoding';
 import { loadSettings } from '../shared/settings';
-import { PORT_NAME, SAMPLE_RATE, type SessionStatus, type TabRequest, type ToBackground, type ToContent } from '../shared/types';
+import { PORT_NAME, SAMPLE_RATE, type Help, type SessionStatus, type TabRequest, type ToBackground, type ToContent } from '../shared/types';
 import { Companion } from './companion';
 import { MediaClock } from './media-clock';
 
@@ -97,16 +97,16 @@ class Session {
       this.companion = new Companion(msg.source, msg.title, {
         audio: (pcm, endedAt) => this.pushCompanionAudio(pcm, endedAt),
         info: (message) => this.post({ type: 'info', message }),
-        error: (message) => {
-          this.status('error', message);
+        error: (message, help) => {
+          this.status('error', message, help);
           this.transcriber?.stop();
         },
       });
     }
   }
 
-  private status(status: SessionStatus, message?: string): void {
-    this.post({ type: 'status', status, message });
+  private status(status: SessionStatus, message?: string, help?: Help): void {
+    this.post({ type: 'status', status, message, help });
   }
 
   private post(msg: ToContent): void {

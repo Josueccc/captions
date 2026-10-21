@@ -3,6 +3,7 @@ import { loadSettings, type Settings } from '../shared/settings';
 import {
   type AudioRoute,
   type CompanionSource,
+  type Help,
   PORT_NAME,
   SAMPLE_RATE,
   type SessionStatus,
@@ -65,6 +66,7 @@ function chooseAudio(setting: Settings['audioSource'], video: HTMLVideoElement):
 class LiveCaptions {
   status: SessionStatus = 'idle';
   message?: string;
+  help?: Help;
 
   private readonly overlay: Overlay;
   private readonly port: browser.runtime.Port;
@@ -135,13 +137,14 @@ class LiveCaptions {
       if (!this.debug) this.overlay.setStatus(msg.message, 'info', 4000);
       console.info(`[captions] ${msg.message}`);
     } else {
-      this.onStatus(msg.status, msg.message);
+      this.onStatus(msg.status, msg.message, msg.help);
     }
   }
 
-  private onStatus(status: SessionStatus, message?: string): void {
+  private onStatus(status: SessionStatus, message?: string, help?: Help): void {
     this.status = status;
     this.message = message;
+    this.help = help;
     switch (status) {
       case 'connecting':
         this.overlay.setStatus('Connecting…');
@@ -244,6 +247,7 @@ function state(): TabState {
     active: live !== null,
     status: live?.status ?? 'idle',
     message: live?.message,
+    help: live?.help,
   };
 }
 

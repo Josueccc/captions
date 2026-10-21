@@ -1,9 +1,13 @@
 import { getProvider } from '../providers/registry';
 import { LANGUAGES, loadSettings } from '../shared/settings';
-import type { TabRequest, TabState } from '../shared/types';
+import { COMPANION_URL, type Help, type TabRequest, type TabState } from '../shared/types';
 
 const summary = document.getElementById('summary')!;
 const message = document.getElementById('message')!;
+const help = document.getElementById('help') as HTMLAnchorElement;
+const HELP: Record<Help, { text: string; url: string }> = {
+  'install-companion': { text: 'Download the companion app (Windows, Linux)', url: COMPANION_URL },
+};
 const toggle = document.getElementById('toggle') as HTMLButtonElement;
 const grant = document.getElementById('grant') as HTMLButtonElement;
 const ALL_SITES = { origins: ['<all_urls>'] };
@@ -26,6 +30,10 @@ async function request(req: TabRequest): Promise<TabState | null> {
 function render(state: TabState | null): void {
   message.className = '';
   toggle.classList.remove('stop');
+  const fix = state?.status === 'error' && state.help ? HELP[state.help] : undefined;
+  help.hidden = !fix;
+  help.textContent = fix?.text ?? '';
+  help.href = fix?.url ?? '#';
   if (!state) {
     toggle.disabled = true;
     message.textContent = 'Captions are not available on this page. If you just installed the extension, reload the tab.';
@@ -73,6 +81,12 @@ grant.addEventListener('click', async () => {
     grant.hidden = true;
     message.textContent = 'Access granted. Reload the tab to use captions.';
   }
+});
+
+help.addEventListener('click', (event) => {
+  event.preventDefault();
+  void browser.tabs.create({ url: help.href });
+  window.close();
 });
 
 document.getElementById('options')!.addEventListener('click', (event) => {

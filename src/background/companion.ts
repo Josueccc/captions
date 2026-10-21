@@ -1,5 +1,5 @@
 import { base64ToInt16 } from '../shared/encoding';
-import type { CompanionSource } from '../shared/types';
+import type { CompanionSource, Help } from '../shared/types';
 
 const HOST = 'captions_companion';
 
@@ -12,13 +12,14 @@ export interface CompanionEvents {
   /** endedAt: wall-clock time (ms) when the chunk's last sample was recorded. */
   audio(pcm: Int16Array<ArrayBuffer>, endedAt: number): void;
   info(message: string): void;
-  error(message: string): void;
+  error(message: string, help?: Help): void;
 }
 
 /**
  * The system-audio companion (companion/ in the repo): a native-messaging host
- * that records Firefox's output from PipeWire, after the browser has decoded
- * it, for videos the page can't capture. One host process per session.
+ * that records Firefox's output (PipeWire on Linux, WASAPI on Windows), after
+ * the browser has decoded it, for videos the page can't capture. One host
+ * process per session.
  */
 export class Companion {
   private readonly port: browser.runtime.Port;
@@ -37,11 +38,14 @@ export class Companion {
     this.port.onDisconnect.addListener((port) => {
       if (this.stopped) return;
       const error = port.error?.message ?? '';
-      events.error(
-        /No such native application|not found/i.test(error)
-          ? 'The system-audio companion is not installed. Run companion/install.sh from the extension repo.'
-          : `The system-audio companion stopped${error ? `: ${error}` : '.'}`,
-      );
+      if (/No such native application|not found/i.test(error)) {
+        events.error(
+          'DRM-protected videos need the Captions companion app, which is not installed. Open the Captions toolbar button to get it.',
+          'install-companion',
+        );
+      } else {
+        events.error(`The system-audio companion stopped${error ? `: ${error}` : '.'}`);
+      }
     });
     this.port.postMessage({ type: 'start', source, title });
   }

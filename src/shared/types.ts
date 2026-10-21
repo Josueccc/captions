@@ -28,6 +28,12 @@ export interface Segment {
 
 export type SessionStatus = 'idle' | 'connecting' | 'running' | 'error';
 
+/** A fix the popup can offer next to an error. */
+export type Help = 'install-companion';
+
+/** Downloads of the system-audio companion (companion/ in the repo). */
+export const COMPANION_URL = 'https://github.com/zerathul/captions/releases/latest';
+
 /**
  * Where the audio comes from: the page's <video> element, or the system-audio
  * companion (for DRM-protected videos, which the page can't capture).
@@ -52,7 +58,7 @@ export type ToBackground =
 /** Background -> content script, over the transcription port. */
 export type ToContent =
   | { type: 'segment'; segment: Segment }
-  | { type: 'status'; status: SessionStatus; message?: string }
+  | { type: 'status'; status: SessionStatus; message?: string; help?: Help }
   /** Transient information for the overlay (e.g. what the companion is recording). */
   | { type: 'info'; message: string };
 
@@ -67,6 +73,7 @@ export interface TabState {
   active: boolean;
   status: SessionStatus;
   message?: string;
+  help?: Help;
 }
 
 /** Audio is sent in 100 ms chunks. */

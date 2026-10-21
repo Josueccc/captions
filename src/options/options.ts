@@ -1,6 +1,7 @@
 import { getProvider, PROVIDERS } from '../providers/registry';
 import type { ProviderDefinition, SettingField } from '../providers/types';
 import { LANGUAGES, loadSettings, saveSettings, type Settings } from '../shared/settings';
+import { COMPANION_URL } from '../shared/types';
 
 const form = document.getElementById('form') as HTMLFormElement;
 const languageSelect = document.getElementById('language') as HTMLSelectElement;
@@ -10,6 +11,7 @@ const providerFields = document.getElementById('provider-fields')!;
 const saved = document.getElementById('saved')!;
 const debugCheckbox = document.getElementById('debug') as HTMLInputElement;
 const audioSourceSelect = document.getElementById('audio-source') as HTMLSelectElement;
+(document.getElementById('companion-link') as HTMLAnchorElement).href = COMPANION_URL;
 
 let settings: Settings;
 

@@ -45,7 +45,7 @@ const ctx = await esbuild.context({
   outdir,
   bundle: true,
   format: 'iife',
-  target: 'firefox128',
+  target: 'firefox140',
   sourcemap: 'linked',
   logLevel: 'info',
   plugins: [copyStaticPlugin],
