@@ -40,15 +40,31 @@ rejects a version it has already signed.
    - **Local server (WhisperLiveKit)**: Whisper on your own GPU/CPU, free and
      private but slower (1–4 s). See [server/README.md](server/README.md).
 2. For DRM-protected sites (Netflix, Disney+, Prime), install the system-audio
-   companion once: `./companion/install.sh` (Linux/PipeWire, see
-   [companion/README.md](companion/README.md)). It's used automatically for
-   videos with DRM.
+   companion app once, from the
+   [releases](https://github.com/zerathul/captions/releases/latest) (Windows
+   installer, or Linux with PipeWire) or from source with `./companion/install.sh`;
+   see [companion/README.md](companion/README.md). It's used automatically for
+   videos with DRM, and the popup links to it when it's missing.
 3. On a page with a video, click the toolbar icon → **Start captions**, or press
    **Alt+Shift+C**.
 
 Use the **Test signal** provider to check that audio capture works on a site
 without spending API credit: it shows the loudness instead of text. Reading a
 DRM video from the page gives nothing; the companion route does.
+
+## Release
+
+1. Bump the version in `src/manifest.json`, `package.json` and
+   `companion/Cargo.toml` (the extension and companion versions can differ).
+2. Push a `vX.Y.Z` tag. CI (`.github/workflows/build.yml`) builds the companion
+   for Linux and Windows and creates a draft GitHub release with them.
+3. Submit the extension to addons.mozilla.org: upload the `npm run package`
+   zip, and since the code is bundled, a source archive (`git archive -o
+   source.zip HEAD`) with the build steps for reviewers: Node 22,
+   `npm ci && npm run build`, output in `dist/`. Or `npm run sign` for a
+   self-distributed (unlisted) `.xpi` to attach to the release.
+4. Publish the draft release. The extension links to its latest release for the
+   companion download.
 
 ## End-to-end harness
 
@@ -88,8 +104,8 @@ content script (per tab)                    background                    provid
 │ CaptionStore (per video) │ ◄──────── │                    │segments│              │
 │ Overlay (shadow DOM)     │  segments │  Companion ◄───────┼─ native messaging ─┐   │
 └──────────────────────────┘           └────────────────────┘        └──────────│───┘
-   DRM videos: no AudioCapture; the content script sends            companion/: pw-record
-   clock marks (currentTime, rate, playing) instead                 on Firefox's stream
+   DRM videos: no AudioCapture; the content script sends            companion/ (Rust): PipeWire
+   clock marks (currentTime, rate, playing) instead                 or WASAPI loopback
 ```
 
 - `src/providers/` — each provider implements `Transcriber` (`types.ts`) and is
@@ -99,7 +115,7 @@ content script (per tab)                    background                    provid
 - The manifest sets its own CSP: MV3's default adds `upgrade-insecure-requests`,
   which silently turns `ws://localhost` into `wss://` and breaks the local server.
 - DRM videos take the *system* route: the companion records Firefox's output
-  from PipeWire and the background places each chunk on the video timeline
+  (PipeWire on Linux, WASAPI on Windows) and the background places each chunk on the video timeline
   from its arrival time and the latest clock mark. The page's `<video>` is never
   touched there, since `mozCaptureStream()` would take its audio off the speakers.
 - Providers report times in *stream* seconds; `MediaClock` maps them to

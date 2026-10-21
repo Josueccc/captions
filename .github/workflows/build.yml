@@ -1,0 +1,86 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run lint
+
+  companion-linux:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: companion
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
+      - run: cargo test --locked
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      # Static (musl) so it runs on any distribution, whatever its glibc.
+      - run: cargo build --release --locked --target x86_64-unknown-linux-musl
+      - name: Package
+        run: |
+          version=$(cargo pkgid | sed 's/.*[#@]//')
+          dir=captions-companion-$version-linux-x64
+          mkdir "$dir"
+          cp target/x86_64-unknown-linux-musl/release/captions-companion README.md "$dir/"
+          tar czf "$dir.tar.gz" "$dir"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: companion-linux
+          path: companion/*.tar.gz
+
+  companion-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: companion
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo clippy --locked -- -D warnings
+      - run: cargo build --release --locked
+      - name: Package
+        shell: pwsh
+        run: |
+          $version = (cargo pkgid) -replace '.*[#@]', ''
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" packaging\windows\captions-companion.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item packaging\windows\Output\*.exe .
+          Copy-Item target\release\captions-companion.exe "captions-companion-$version-windows-x64-portable.exe"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: companion-windows
+          path: companion/captions-companion-*.exe
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [extension, companion-linux, companion-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: companion-*
+          merge-multiple: true
+          path: downloads
+      # A draft: add the signed .xpi (npm run sign) and publish it by hand.
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: downloads/*
