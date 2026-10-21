@@ -10,7 +10,7 @@ a video and stops it with them.
 
 ## Install
 
-From the [releases](https://github.com/zerathul/captions/releases/latest):
+From the [releases](https://github.com/Josueccc/captions/releases/latest):
 
 - **Windows 10/11**: run `captions-companion-…-windows-x64-setup.exe` (per-user,
   no admin rights). Uninstall it from Settings → Apps. The `-portable.exe`

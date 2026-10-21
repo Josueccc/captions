@@ -32,7 +32,7 @@ export type SessionStatus = 'idle' | 'connecting' | 'running' | 'error';
 export type Help = 'install-companion';
 
 /** Downloads of the system-audio companion (companion/ in the repo). */
-export const COMPANION_URL = 'https://github.com/zerathul/captions/releases/latest';
+export const COMPANION_URL = 'https://github.com/Josueccc/captions/releases/latest';
 
 /**
  * Where the audio comes from: the page's <video> element, or the system-audio

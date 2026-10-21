@@ -41,7 +41,7 @@ rejects a version it has already signed.
      private but slower (1–4 s). See [server/README.md](server/README.md).
 2. For DRM-protected sites (Netflix, Disney+, Prime), install the system-audio
    companion app once, from the
-   [releases](https://github.com/zerathul/captions/releases/latest) (Windows
+   [releases](https://github.com/Josueccc/captions/releases/latest) (Windows
    installer, or Linux with PipeWire) or from source with `./companion/install.sh`;
    see [companion/README.md](companion/README.md). It's used automatically for
    videos with DRM, and the popup links to it when it's missing.
