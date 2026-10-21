@@ -8,3 +8,4 @@ e2e/site/*.webm
 server/.venv/
 server/.uv/
 __pycache__/
+companion/target/
