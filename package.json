@@ -10,7 +10,8 @@
     "dev": "web-ext run --source-dir dist",
     "lint": "web-ext lint --source-dir dist",
     "typecheck": "tsc --noEmit",
-    "package": "npm run build && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest"
+    "package": "npm run build && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest",
+    "sign": "npm run build && web-ext sign --source-dir dist --artifacts-dir artifacts --channel unlisted"
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.1",

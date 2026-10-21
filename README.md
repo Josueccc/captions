@@ -17,6 +17,22 @@ npm run lint
 Or load it manually: `about:debugging` → This Firefox → Load Temporary Add-on →
 `dist/manifest.json`.
 
+## Install permanently
+
+Release Firefox only keeps signed add-ons. To sign it privately (unlisted, not
+published on addons.mozilla.org), create API credentials at
+<https://addons.mozilla.org/developers/addon/api/key/>, then:
+
+```sh
+export WEB_EXT_API_KEY=user:12345:67   # JWT issuer
+export WEB_EXT_API_SECRET=...          # JWT secret
+npm run sign
+```
+
+Install the `.xpi` from `artifacts/` via `about:addons` → gear → Install Add-on
+From File. Bump `version` in `src/manifest.json` before each new signing: AMO
+rejects a version it has already signed.
+
 ## Use
 
 1. Open the extension's settings, pick the audio language and a provider:
