@@ -5,6 +5,6 @@ set -euo pipefail
 cd "$(dirname "$0")"
 cargo build --release --quiet
 if [[ "${1:-}" == "--uninstall" ]]; then
-  exec target/release/captions-companion uninstall
+  exec target/release/auris-companion uninstall
 fi
-exec target/release/captions-companion install
+exec target/release/auris-companion install

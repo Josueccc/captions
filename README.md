@@ -1,4 +1,4 @@
-# Captions
+# Auris
 
 Firefox extension that shows live captions transcribed from the video's actual
 audio, so the text matches what's said word for word (unlike platform subtitles,

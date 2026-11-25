@@ -1,4 +1,4 @@
-"""Drive Firefox with the captions extension loaded (from dist/).
+"""Drive Firefox with the Auris extension loaded (from dist/).
 
 Starts captions on a page, samples what's on screen, and saves screenshots.
 Sets debug mode, so the latency readout is printed too.
@@ -25,7 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.join(HERE, '..', 'dist')
 SITE = os.path.join(HERE, 'site')
 SHOTS = os.path.join(HERE, 'shots')
-ADDON_ID = 'captions@zerathul.local'
+ADDON_ID = 'auris@josueccc'
 # Pinned so the harness can open extension pages at a known moz-extension:// URL.
 ADDON_UUID = '4b7c2a1e-0d3f-4e5a-9c8b-1f2e3d4c5b6a'
 PORT = 8765
@@ -157,7 +157,7 @@ def main():
         state = read_state(driver)
         print(f'\nfinal median lag: {state["lag"]} s at t={state["t"]:.1f}' + (f', {shots} screenshots in {SHOTS}' if shots else ''))
     finally:
-        relevant = [line for line in logs if 'captions' in line.lower()]
+        relevant = [line for line in logs if 'auris' in line.lower()]
         if relevant:
             print('\n'.join(relevant[-30:]))
         driver.quit()

@@ -11,8 +11,8 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-pub const HOST_NAME: &str = "captions_companion";
-pub const EXTENSION_ID: &str = "captions@zerathul.local";
+pub const HOST_NAME: &str = "auris_companion";
+pub const EXTENSION_ID: &str = "auris@josueccc";
 
 pub fn install() -> Result<String, String> {
     #[cfg(target_os = "linux")]
@@ -34,7 +34,7 @@ pub fn install() -> Result<String, String> {
     }
     let contents = serde_json::to_string_pretty(&json!({
         "name": HOST_NAME,
-        "description": "Captions: records Firefox's audio output for DRM-protected videos",
+        "description": "Auris: records Firefox's audio output for DRM-protected videos",
         "path": exe,
         "type": "stdio",
         "allowed_extensions": [EXTENSION_ID],
@@ -75,7 +75,7 @@ pub fn uninstall() -> Result<String, String> {
             return Err(format!("can't remove {}: {e}", dir.display()));
         }
     }
-    Ok("Uninstalled the Captions companion.".into())
+    Ok("Uninstalled the Auris companion.".into())
 }
 
 fn remove(path: &Path) -> Result<(), String> {
@@ -94,12 +94,12 @@ fn var_path(name: &str) -> Result<PathBuf, String> {
 }
 
 #[cfg(windows)]
-const REGISTRY_KEY: &str = r"Software\Mozilla\NativeMessagingHosts\captions_companion";
+const REGISTRY_KEY: &str = r"Software\Mozilla\NativeMessagingHosts\auris_companion";
 
 /// Where the installer puts it too (packaging/windows), so both installs are the same.
 #[cfg(windows)]
 fn install_dir() -> Result<PathBuf, String> {
-    Ok(var_path("LOCALAPPDATA")?.join("Programs").join("Captions Companion"))
+    Ok(var_path("LOCALAPPDATA")?.join("Programs").join("Auris Companion"))
 }
 
 #[cfg(windows)]
@@ -110,7 +110,7 @@ fn manifest_path() -> Result<PathBuf, String> {
 #[cfg(not(windows))]
 fn install_dir() -> Result<PathBuf, String> {
     let data = var_path("XDG_DATA_HOME").or_else(|_| var_path("HOME").map(|home| home.join(".local/share")))?;
-    Ok(data.join("captions-companion"))
+    Ok(data.join("auris-companion"))
 }
 
 /// Firefox reads native hosts from ~/.mozilla even when its profiles live in

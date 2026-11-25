@@ -39,8 +39,8 @@ export const COMPANION_URL = 'https://github.com/Josueccc/captions/releases/late
  * The CI names these assets without a version so the links stay valid.
  */
 export const COMPANION_DOWNLOADS: Partial<Record<browser.runtime.PlatformOs, string>> = {
-  win: `${COMPANION_URL}/download/captions-companion-windows-x64-setup.exe`,
-  linux: `${COMPANION_URL}/download/captions-companion-linux-x64.tar.gz`,
+  win: `${COMPANION_URL}/download/auris-companion-windows-x64-setup.exe`,
+  linux: `${COMPANION_URL}/download/auris-companion-linux-x64.tar.gz`,
 };
 
 /**

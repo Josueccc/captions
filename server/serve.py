@@ -1,4 +1,4 @@
-"""Start WhisperLiveKit with two fixes for the captions extension.
+"""Start WhisperLiveKit with two fixes for the Auris extension.
 
 1. Its Deepgram-compatible endpoint turns every Whisper sub-word token into its
    own word ("pre uve", "l'opin ion"). Tokens that don't start with a space

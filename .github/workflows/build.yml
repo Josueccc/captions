@@ -36,9 +36,9 @@ jobs:
       # releases/latest/download/<name>, which must stay valid across releases.
       - name: Package
         run: |
-          dir=captions-companion-linux-x64
+          dir=auris-companion-linux-x64
           mkdir "$dir"
-          cp target/x86_64-unknown-linux-musl/release/captions-companion README.md "$dir/"
+          cp target/x86_64-unknown-linux-musl/release/auris-companion README.md "$dir/"
           cp ../LICENSE "$dir/"
           tar czf "$dir.tar.gz" "$dir"
       - uses: actions/upload-artifact@v4
@@ -60,14 +60,14 @@ jobs:
         run: |
           $version = (cargo pkgid) -replace '.*[#@]', ''
           choco install innosetup --no-progress -y
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" packaging\windows\captions-companion.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" packaging\windows\auris-companion.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item packaging\windows\Output\*.exe .
-          Copy-Item target\release\captions-companion.exe captions-companion-windows-x64-portable.exe
+          Copy-Item target\release\auris-companion.exe auris-companion-windows-x64-portable.exe
       - uses: actions/upload-artifact@v4
         with:
           name: companion-windows
-          path: companion/captions-companion-*.exe
+          path: companion/auris-companion-*.exe
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

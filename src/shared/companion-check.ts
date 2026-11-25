@@ -1,5 +1,5 @@
 /** The native-messaging host name the companion registers (companion/src/register.rs). */
-export const COMPANION_HOST = 'captions_companion';
+export const COMPANION_HOST = 'auris_companion';
 
 /** How long to wait for the companion's reply before deciding it's an older build. */
 const HELLO_TIMEOUT_MS = 3000;

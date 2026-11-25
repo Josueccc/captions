@@ -1,4 +1,4 @@
-//! Native-messaging host: streams Firefox's own audio output to the extension.
+//! Auris companion. Native-messaging host: streams Firefox's own audio output to the extension.
 //!
 //! DRM-protected videos (Netflix, Disney+, Prime) can't be captured from the page:
 //! mozCaptureStream() on an encrypted <video> yields silence. The decoded audio
@@ -54,12 +54,12 @@ pub struct State {
     pub stopped: AtomicBool,
 }
 
-const USAGE: &str = "Captions companion: records Firefox's audio for the Captions extension.
+const USAGE: &str = "Auris companion: records Firefox's audio for the Auris extension.
 
 Usage:
-  captions-companion install     copy to a per-user folder and register with Firefox
-  captions-companion uninstall   undo install
-  captions-companion --version
+  auris-companion install     copy to a per-user folder and register with Firefox
+  auris-companion uninstall   undo install
+  auris-companion --version
 
 Firefox starts it by itself once it's installed.";
 
@@ -69,7 +69,7 @@ fn main() -> ExitCode {
         Some("install") => report(register::install()),
         Some("uninstall") => report(register::uninstall()),
         Some("--version" | "-V") => {
-            println!("captions-companion {}", env!("CARGO_PKG_VERSION"));
+            println!("auris-companion {}", env!("CARGO_PKG_VERSION"));
             ExitCode::SUCCESS
         }
         // Firefox runs it with pipes and passes the manifest path and extension id.

@@ -89,7 +89,7 @@ export class AudioCapture {
 
     try {
       await this.attachWorklet(graph);
-      console.info('[captions] capturing audio with AudioWorklet');
+      console.info('[auris] capturing audio with AudioWorklet');
       // Judge by playback progress, not wall time: the page may still be
       // buffering (or showing an ad) when captions start.
       let played = 0;
@@ -103,13 +103,13 @@ export class AudioCapture {
           clearInterval(this.watchdog);
         } else if (played >= WORKLET_WATCHDOG_PLAYED_SECONDS) {
           clearInterval(this.watchdog);
-          console.warn('[captions] AudioWorklet produced no audio; falling back to ScriptProcessor');
+          console.warn('[auris] AudioWorklet produced no audio; falling back to ScriptProcessor');
           this.detach();
           this.attachScriptProcessor(graph);
         }
       }, WATCHDOG_POLL_MS);
     } catch (err) {
-      console.warn('[captions] AudioWorklet unavailable; falling back to ScriptProcessor', err);
+      console.warn('[auris] AudioWorklet unavailable; falling back to ScriptProcessor', err);
       this.attachScriptProcessor(graph);
     }
   }
@@ -167,7 +167,7 @@ export class AudioCapture {
       this.onChunk(chunk);
       this.receivedAudio = true;
     } catch (err) {
-      if (!this.reportedError) console.error('[captions] Failed to handle an audio chunk', err);
+      if (!this.reportedError) console.error('[auris] Failed to handle an audio chunk', err);
       this.reportedError = true;
     }
   }

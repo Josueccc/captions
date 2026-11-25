@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Captions"
+    "message": "Auris"
   },
   "extensionDescription": {
     "message": "Live captions transcribed from the video's actual audio, word for word. Made for language learning."
@@ -9,10 +9,10 @@
     "message": "Start/stop live captions on the current tab"
   },
   "optionsTitle": {
-    "message": "Captions settings"
+    "message": "Auris settings"
   },
   "optionsHeading": {
-    "message": "Captions"
+    "message": "Auris"
   },
   "optionsSubtitle": {
     "message": "Settings"
@@ -141,7 +141,7 @@
     "message": "Only needed for DRM-protected videos. Download it, run it once, then click “Check again”."
   },
   "companion_missing_linux": {
-    "message": "Only needed for DRM-protected videos. Download it, unpack it and run ./captions-companion install (needs PipeWire), then click “Check again”."
+    "message": "Only needed for DRM-protected videos. Download it, unpack it and run ./auris-companion install (needs PipeWire), then click “Check again”."
   },
   "companion_outdated_pill": {
     "message": "Update needed"
@@ -246,7 +246,7 @@
     "message": "Connection closed (code $1)."
   },
   "errorCompanionMissing": {
-    "message": "DRM-protected videos need the Captions companion app, which is not installed. Open the Captions toolbar button to get it."
+    "message": "DRM-protected videos need the Auris companion app, which is not installed. Open the Auris toolbar button to get it."
   },
   "errorCompanionStopped": {
     "message": "The system-audio companion stopped."

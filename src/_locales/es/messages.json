@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Captions"
+    "message": "Auris"
   },
   "extensionDescription": {
     "message": "Subtítulos en vivo transcritos del audio real del video, palabra por palabra. Pensado para aprender idiomas."
@@ -9,10 +9,10 @@
     "message": "Iniciar/detener los subtítulos en la pestaña actual"
   },
   "optionsTitle": {
-    "message": "Ajustes de Captions"
+    "message": "Ajustes de Auris"
   },
   "optionsHeading": {
-    "message": "Captions"
+    "message": "Auris"
   },
   "optionsSubtitle": {
     "message": "Ajustes"
@@ -141,7 +141,7 @@
     "message": "Solo hace falta para videos con DRM. Descárgalo, ejecútalo una vez y pulsa «Comprobar de nuevo»."
   },
   "companion_missing_linux": {
-    "message": "Solo hace falta para videos con DRM. Descárgalo, descomprímelo y ejecuta ./captions-companion install (necesita PipeWire); luego pulsa «Comprobar de nuevo»."
+    "message": "Solo hace falta para videos con DRM. Descárgalo, descomprímelo y ejecuta ./auris-companion install (necesita PipeWire); luego pulsa «Comprobar de nuevo»."
   },
   "companion_outdated_pill": {
     "message": "Hay que actualizar"
@@ -246,7 +246,7 @@
     "message": "Conexión cerrada (código $1)."
   },
   "errorCompanionMissing": {
-    "message": "Los videos con DRM necesitan la aplicación companion de Captions, que no está instalada. Abre el botón de Captions en la barra para obtenerla."
+    "message": "Los videos con DRM necesitan la aplicación companion de Auris, que no está instalada. Abre el botón de Auris en la barra para obtenerla."
   },
   "errorCompanionStopped": {
     "message": "El companion de audio del sistema se detuvo."

@@ -136,7 +136,7 @@ class LiveCaptions {
       }
     } else if (msg.type === 'info') {
       if (!this.debug) this.overlay.setStatus(msg.message, 'info', 4000);
-      console.info(`[captions] ${msg.message}`);
+      console.info(`[auris] ${msg.message}`);
     } else {
       this.onStatus(msg.status, msg.message, msg.help);
     }

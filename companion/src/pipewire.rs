@@ -171,7 +171,7 @@ impl Recorder {
     fn start(&mut self, target: &str, capture_sink: bool) {
         self.stop();
         let props = format!(
-            "{{ node.name = \"captions-companion\" node.dont-reconnect = true node.dont-fallback = true{} }}",
+            "{{ node.name = \"auris-companion\" node.dont-reconnect = true node.dont-fallback = true{} }}",
             if capture_sink { " stream.capture.sink = true" } else { "" }
         );
         let rate = SAMPLE_RATE.to_string();

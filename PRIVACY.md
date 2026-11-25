@@ -1,8 +1,8 @@
-# Privacy policy — Captions
+# Privacy policy — Auris
 
 *Last updated: 2026-11-25*
 
-Captions shows live captions for videos by sending their audio to a speech-to-text
+Auris shows live captions for videos by sending their audio to a speech-to-text
 service **that you choose and configure**. It has no server of its own and
 collects nothing for its developer.
 

@@ -270,7 +270,7 @@ export class DeepgramStream implements Transcriber {
 
   stalled(connection: Connection): void {
     if (connection !== this.connection || this.stopped || !this.target.restartOnStall) return;
-    console.warn('[captions] transcription stream stalled; reconnecting');
+    console.warn('[auris] transcription stream stalled; reconnecting');
     this.reconnect();
   }
 
