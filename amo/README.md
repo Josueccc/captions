@@ -29,6 +29,7 @@ sends it with the build and the source archive.
    - **Privacy policy**: paste `PRIVACY.md`. Required, since audio is sent to a
      provider.
    - **Screenshots**: settings page, captions on a video, the popup.
+   - **License**: GPL-3.0-or-later is set by `metadata.json`.
    - **Compatibility**: Firefox for desktop only (no Android: it has no
      native messaging, and isn't tested there).
 

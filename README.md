@@ -132,3 +132,8 @@ content script (per tab)                    background                    provid
   `video.currentTime` using the media time + playback rate attached to every
   audio chunk, so seeking, pausing and slow playback keep captions in sync, and
   rewinding replays cached lines.
+
+## License
+
+[GPL-3.0-or-later](LICENSE): you may use, change and share this code, and
+versions you distribute must stay under the same license with their source.

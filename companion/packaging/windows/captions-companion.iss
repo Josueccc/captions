@@ -35,6 +35,8 @@ CloseApplications=yes
 
 [Files]
 Source: "{#Exe}"; DestDir: "{app}"; Flags: ignoreversion
+; Shipped with the binary as the GPL asks; not shown as a page, since using it needs no acceptance.
+Source: "..\..\..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 
 [Run]
 Filename: "{app}\captions-companion.exe"; Parameters: "install"; Flags: runhidden waituntilterminated; StatusMsg: "Registering with Firefox..."
