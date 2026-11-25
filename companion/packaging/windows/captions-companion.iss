@@ -1,7 +1,7 @@
 ; Inno Setup script for the Windows companion: a per-user install (no admin
 ; prompt) into the same folder `captions-companion install` uses, registered
-; with Firefox by that command. Built by .github/workflows/companion.yml:
-;   iscc /DAppVersion=0.2.0 /DExe=path\to\captions-companion.exe captions-companion.iss
+; with Firefox by that command. Built by .github/workflows/build.yml:
+;   iscc /DAppVersion=0.3.0 /DExe=path\to\captions-companion.exe captions-companion.iss
 
 #ifndef AppVersion
   #error Pass /DAppVersion=x.y.z
@@ -23,7 +23,8 @@ DisableReadyPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-OutputBaseFilename=captions-companion-{#AppVersion}-windows-x64-setup
+; No version in the name: the extension links to releases/latest/download/<this>.
+OutputBaseFilename=captions-companion-windows-x64-setup
 OutputDir=Output
 Compression=lzma2
 SolidCompression=yes

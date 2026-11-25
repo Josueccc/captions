@@ -1,5 +1,6 @@
 import { Downsampler } from '../shared/downsampler';
 import { CHUNK_SAMPLES } from '../shared/types';
+import { t } from '../shared/i18n';
 
 /** If the worklet produces nothing over this much actual playback, fall back. */
 const WORKLET_WATCHDOG_PLAYED_SECONDS = 2;
@@ -83,7 +84,7 @@ export class AudioCapture {
     const graph = getGraph(this.video);
     await graph.ctx.resume().catch(() => {});
     if (graph.ctx.state !== 'running') {
-      throw new Error('The browser blocked audio processing. Click the page and try again.');
+      throw new Error(t('errorAudioBlocked'));
     }
 
     try {

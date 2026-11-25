@@ -1,6 +1,6 @@
 {
   "name": "captions",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Live captions that match the audio, for language learning",
   "type": "module",
@@ -11,7 +11,9 @@
     "lint": "web-ext lint --source-dir dist",
     "typecheck": "tsc --noEmit",
     "package": "npm run build && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest",
-    "sign": "npm run build && web-ext sign --source-dir dist --artifacts-dir artifacts --channel unlisted"
+    "sign": "npm run build && web-ext sign --source-dir dist --artifacts-dir artifacts --channel unlisted",
+    "source": "mkdir -p artifacts && git archive --format=zip -o artifacts/source.zip HEAD",
+    "submit": "npm run build && npm run source && web-ext sign --source-dir dist --artifacts-dir artifacts --channel listed --amo-metadata amo/metadata.json --upload-source-code artifacts/source.zip"
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.1",

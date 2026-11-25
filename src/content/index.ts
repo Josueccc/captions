@@ -16,6 +16,7 @@ import { AudioCapture } from './audio-capture';
 import { CaptionStore } from './caption-store';
 import { LatencyMeter } from './latency';
 import { Overlay } from './overlay';
+import { t } from '../shared/i18n';
 
 const PING_INTERVAL_MS = 10_000;
 const DEBUG_REFRESH_MS = 500;
@@ -88,7 +89,7 @@ class LiveCaptions {
     this.port = browser.runtime.connect({ name: PORT_NAME });
     this.port.onMessage.addListener((msg) => this.onMessage(msg as ToContent));
     this.port.onDisconnect.addListener(() => {
-      if (!this.stopped) this.onStatus('error', 'Lost connection to the extension. Toggle captions to retry.');
+      if (!this.stopped) this.onStatus('error', t('errorLostConnection'));
     });
     this.pingTimer = setInterval(() => this.send({ type: 'ping' }), PING_INTERVAL_MS);
 
@@ -147,13 +148,13 @@ class LiveCaptions {
     this.help = help;
     switch (status) {
       case 'connecting':
-        this.overlay.setStatus('Connecting…');
+        this.overlay.setStatus(t('statusConnecting'));
         break;
       case 'running':
         if (!this.debug) this.overlay.setStatus('● Live captions', 'info', 2000);
         break;
       case 'error':
-        this.overlay.setStatus(message ?? 'Transcription error', 'error');
+        this.overlay.setStatus(message ?? t('errorTranscription'), 'error');
         this.capture?.stop();
         this.capture = undefined;
         return;
@@ -167,7 +168,7 @@ class LiveCaptions {
     try {
       await this.capture.start();
     } catch (err) {
-      this.onStatus('error', `Could not capture audio: ${err instanceof Error ? err.message : err}`);
+      this.onStatus('error', t('errorCapture', err instanceof Error ? err.message : String(err)));
     }
   }
 
@@ -200,7 +201,7 @@ class LiveCaptions {
 
   private readonly tick = () => {
     if (!this.video.isConnected) {
-      this.onStatus('error', 'The video was removed from the page.');
+      this.onStatus('error', t('errorVideoRemoved'));
       return;
     }
     // Single-page sites (YouTube) reuse the same <video> for the next video.
@@ -211,9 +212,9 @@ class LiveCaptions {
       this.flush();
     }
     this.overlay.layout();
-    const t = this.video.currentTime;
-    const segment = this.store.at(t);
-    this.overlay.showSegment(segment, t);
+    const now = this.video.currentTime;
+    const segment = this.store.at(now);
+    this.overlay.showSegment(segment, now);
     this.shownText = segment?.text ?? '';
     this.frame = requestAnimationFrame(this.tick);
   };

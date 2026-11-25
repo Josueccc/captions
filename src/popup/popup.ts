@@ -1,12 +1,13 @@
 import { getProvider } from '../providers/registry';
-import { LANGUAGES, loadSettings } from '../shared/settings';
+import { localizePage, t } from '../shared/i18n';
+import { languageName, loadSettings } from '../shared/settings';
 import { COMPANION_URL, type Help, type TabRequest, type TabState } from '../shared/types';
 
 const summary = document.getElementById('summary')!;
 const message = document.getElementById('message')!;
 const help = document.getElementById('help') as HTMLAnchorElement;
 const HELP: Record<Help, { text: string; url: string }> = {
-  'install-companion': { text: 'Download the companion app (Windows, Linux)', url: COMPANION_URL },
+  'install-companion': { text: t('popupGetCompanion'), url: COMPANION_URL },
 };
 const toggle = document.getElementById('toggle') as HTMLButtonElement;
 const grant = document.getElementById('grant') as HTMLButtonElement;
@@ -36,36 +37,37 @@ function render(state: TabState | null): void {
   help.href = fix?.url ?? '#';
   if (!state) {
     toggle.disabled = true;
-    message.textContent = 'Captions are not available on this page. If you just installed the extension, reload the tab.';
+    message.textContent = t('popupUnavailable');
     return;
   }
   if (!state.hasVideo && !state.active) {
     toggle.disabled = true;
-    message.textContent = 'No video found on this page.';
+    message.textContent = t('popupNoVideo');
     return;
   }
   toggle.disabled = false;
-  toggle.textContent = state.active ? 'Stop captions' : 'Start captions';
+  toggle.textContent = state.active ? t('popupStop') : t('popupStart');
   toggle.classList.toggle('stop', state.active);
   if (state.status === 'error') {
     message.className = 'error';
-    message.textContent = state.message ?? 'Transcription error';
+    message.textContent = state.message ?? t('errorTranscription');
   } else {
-    message.textContent = { idle: '', connecting: 'Connecting…', running: 'Live' }[state.status];
+    message.textContent = { idle: '', connecting: t('statusConnecting'), running: t('statusLive') }[state.status];
   }
 }
 
 async function init(): Promise<void> {
+  localizePage();
   const settings = await loadSettings();
   const provider = getProvider(settings.provider);
-  const language = LANGUAGES.find(([code]) => code === settings.language)?.[1] ?? settings.language;
-  summary.textContent = `${language} · ${provider?.label ?? 'no provider selected'}`;
+  const language = languageName(settings.language);
+  summary.textContent = `${language} · ${provider?.label ?? t('popupNoProvider')}`;
 
   // Firefox MV3 lets users withhold host permissions; without them the content script never loads.
   if (!(await browser.permissions.contains(ALL_SITES))) {
     grant.hidden = false;
     toggle.disabled = true;
-    message.textContent = 'The extension needs access to websites to read video audio.';
+    message.textContent = t('popupNeedsAccess');
     return;
   }
   render(await request({ type: 'get-state' }));
@@ -79,7 +81,7 @@ toggle.addEventListener('click', async () => {
 grant.addEventListener('click', async () => {
   if (await browser.permissions.request(ALL_SITES)) {
     grant.hidden = true;
-    message.textContent = 'Access granted. Reload the tab to use captions.';
+    message.textContent = t('popupAccessGranted');
   }
 });
 

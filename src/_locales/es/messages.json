@@ -1,0 +1,305 @@
+{
+  "extensionName": {
+    "message": "Captions"
+  },
+  "extensionDescription": {
+    "message": "Subtítulos en vivo transcritos del audio real del video, palabra por palabra. Pensado para aprender idiomas."
+  },
+  "commandToggle": {
+    "message": "Iniciar/detener los subtítulos en la pestaña actual"
+  },
+  "optionsTitle": {
+    "message": "Ajustes de Captions"
+  },
+  "optionsHeading": {
+    "message": "Captions"
+  },
+  "optionsSubtitle": {
+    "message": "Ajustes"
+  },
+  "sectionTranscription": {
+    "message": "Transcripción"
+  },
+  "sectionAudio": {
+    "message": "Fuente de audio"
+  },
+  "sectionAdvanced": {
+    "message": "Avanzado"
+  },
+  "fieldLanguage": {
+    "message": "Idioma del audio"
+  },
+  "fieldLanguageHelp": {
+    "message": "El idioma que se habla en los videos."
+  },
+  "fieldProvider": {
+    "message": "Proveedor de transcripción"
+  },
+  "fieldShow": {
+    "message": "Mostrar"
+  },
+  "fieldHide": {
+    "message": "Ocultar"
+  },
+  "fieldRequired": {
+    "message": "Obligatorio"
+  },
+  "advancedOptions": {
+    "message": "Opciones avanzadas"
+  },
+  "testButton": {
+    "message": "Probar conexión"
+  },
+  "testRunning": {
+    "message": "Conectando…"
+  },
+  "testOk": {
+    "message": "La conexión funciona."
+  },
+  "saving": {
+    "message": "Guardando…"
+  },
+  "saved": {
+    "message": "Guardado ✓"
+  },
+  "optionsNote": {
+    "message": "Los cambios se guardan solos y se aplican la próxima vez que inicies los subtítulos. Las claves de API solo se guardan en el almacenamiento de la extensión en este navegador."
+  },
+  "shortcutLabel": {
+    "message": "Atajo de teclado"
+  },
+  "shortcutHelp": {
+    "message": "Inicia y detiene los subtítulos en la pestaña actual:"
+  },
+  "shortcutChange": {
+    "message": "Cambiar"
+  },
+  "shortcutNone": {
+    "message": "sin asignar"
+  },
+  "debugLabel": {
+    "message": "Mostrar el retraso de los subtítulos"
+  },
+  "debugHelp": {
+    "message": "Muestra cuánto tarda cada subtítulo en aparecer respecto al audio. Para diagnosticar problemas."
+  },
+  "audio_auto": {
+    "message": "Automático"
+  },
+  "audio_auto_help": {
+    "message": "El video de la página; el companion para videos con DRM."
+  },
+  "audio_page": {
+    "message": "El video de la página"
+  },
+  "audio_page_help": {
+    "message": "Lee el audio directamente del video. No funciona con DRM."
+  },
+  "audio_tab": {
+    "message": "Companion: el audio de esta pestaña"
+  },
+  "audio_tab_help": {
+    "message": "Graba siempre con el companion, solo el sonido de Firefox."
+  },
+  "audio_system": {
+    "message": "Companion: todo el audio del sistema"
+  },
+  "audio_system_help": {
+    "message": "Todo lo que suena por los altavoces. Úsalo si no encuentra el audio de la pestaña."
+  },
+  "companionHeading": {
+    "message": "Companion de audio del sistema"
+  },
+  "companionExplain": {
+    "message": "Los videos con DRM (Netflix, Disney+, Prime Video…) no se pueden leer desde la página. Esta pequeña aplicación, que se instala aparte, los graba desde la salida de sonido."
+  },
+  "companionAllDownloads": {
+    "message": "Todas las descargas e instrucciones"
+  },
+  "companionRecheck": {
+    "message": "Comprobar de nuevo"
+  },
+  "companionDownloadWindows": {
+    "message": "Descargar para Windows"
+  },
+  "companionDownloadLinux": {
+    "message": "Descargar para Linux"
+  },
+  "companion_checking_pill": {
+    "message": "Comprobando…"
+  },
+  "companion_installed_pill": {
+    "message": "Instalado · v$1"
+  },
+  "companion_installed": {
+    "message": "Los videos con DRM funcionarán."
+  },
+  "companion_missing_pill": {
+    "message": "No instalado"
+  },
+  "companion_missing": {
+    "message": "Solo hace falta para videos con DRM. Descárgalo, ejecútalo una vez y pulsa «Comprobar de nuevo»."
+  },
+  "companion_missing_linux": {
+    "message": "Solo hace falta para videos con DRM. Descárgalo, descomprímelo y ejecuta ./captions-companion install (necesita PipeWire); luego pulsa «Comprobar de nuevo»."
+  },
+  "companion_outdated_pill": {
+    "message": "Hay que actualizar"
+  },
+  "companion_outdated": {
+    "message": "Tienes una versión antigua. Instala la última; reemplaza a la anterior."
+  },
+  "companion_broken_pill": {
+    "message": "Error"
+  },
+  "companion_broken": {
+    "message": "Está registrado pero Firefox no pudo iniciarlo ($1). Reinstalarlo suele arreglarlo."
+  },
+  "companion_unsupported_pill": {
+    "message": "No disponible"
+  },
+  "companion_unsupported": {
+    "message": "El companion funciona en Windows 10/11 y Linux. En este sistema solo funcionan los videos sin DRM."
+  },
+  "providerDeepgramLabel": {
+    "message": "Deepgram (nube)"
+  },
+  "providerDeepgramDescription": {
+    "message": "Transcripción en streaming rápida y precisa. Necesita una clave de API de deepgram.com (crédito gratis al registrarse)."
+  },
+  "providerLocalLabel": {
+    "message": "Servidor local (WhisperLiveKit)"
+  },
+  "providerLocalDescription": {
+    "message": "Whisper en tu propio equipo: gratis y privado, pero más lento. Se inicia con server/run.sh del repositorio del proyecto."
+  },
+  "providerTestLabel": {
+    "message": "Señal de prueba (sin transcripción)"
+  },
+  "providerTestDescription": {
+    "message": "Muestra el nivel de audio en lugar de texto, para comprobar que la captura funciona en un sitio."
+  },
+  "fieldApiKey": {
+    "message": "Clave de API"
+  },
+  "fieldDeepgramKeyHelp": {
+    "message": "Créala en la consola de Deepgram → API Keys."
+  },
+  "fieldModel": {
+    "message": "Modelo"
+  },
+  "modelNova3": {
+    "message": "Nova-3 (el mejor)"
+  },
+  "modelNova2": {
+    "message": "Nova-2 (más idiomas)"
+  },
+  "fieldExtraParams": {
+    "message": "Parámetros extra"
+  },
+  "fieldDeepgramExtraHelp": {
+    "message": "Se añaden a la URL de la petición. Consulta la documentación de streaming de Deepgram."
+  },
+  "fieldServerUrl": {
+    "message": "URL del servidor"
+  },
+  "fieldServerUrlHelp": {
+    "message": "Endpoint WebSocket compatible con Deepgram."
+  },
+  "fieldApiToken": {
+    "message": "Token de API"
+  },
+  "fieldApiTokenHelp": {
+    "message": "Solo si el servidor se inició con --api-token."
+  },
+  "testSignalSilence": {
+    "message": "🔇 silencio ($1–$2 s): ¿video con DRM o silenciado?"
+  },
+  "testSignalLevel": {
+    "message": "🔊 $1 dB ($2–$3 s)"
+  },
+  "statusConnecting": {
+    "message": "Conectando…"
+  },
+  "statusLive": {
+    "message": "En vivo"
+  },
+  "errorTranscription": {
+    "message": "Error de transcripción"
+  },
+  "errorDeepgramKeyMissing": {
+    "message": "Falta la clave de API de Deepgram: configúrala en los ajustes de la extensión."
+  },
+  "errorDeepgramKeyInvalid": {
+    "message": "Deepgram rechazó la clave de API."
+  },
+  "errorDeepgramModelLanguage": {
+    "message": "La clave de API es válida, pero el modelo $1 no admite el idioma «$2». Prueba otro modelo."
+  },
+  "errorDeepgramConnect": {
+    "message": "No se pudo conectar con Deepgram. Revisa la clave de API y que el modelo admita este idioma."
+  },
+  "errorLocalConnect": {
+    "message": "No se pudo conectar con $1. ¿Está en marcha el servidor local?"
+  },
+  "errorConnectionClosed": {
+    "message": "Conexión cerrada (código $1)."
+  },
+  "errorCompanionMissing": {
+    "message": "Los videos con DRM necesitan la aplicación companion de Captions, que no está instalada. Abre el botón de Captions en la barra para obtenerla."
+  },
+  "errorCompanionStopped": {
+    "message": "El companion de audio del sistema se detuvo."
+  },
+  "errorCompanionStoppedReason": {
+    "message": "El companion de audio del sistema se detuvo: $1"
+  },
+  "errorUnknownProvider": {
+    "message": "Proveedor desconocido «$1». Elige uno en los ajustes."
+  },
+  "errorProviderStart": {
+    "message": "No se pudo iniciar $1: $2"
+  },
+  "errorAudioBlocked": {
+    "message": "El navegador bloqueó el procesamiento de audio. Haz clic en la página y vuelve a intentarlo."
+  },
+  "errorLostConnection": {
+    "message": "Se perdió la conexión con la extensión. Vuelve a activar los subtítulos."
+  },
+  "errorCapture": {
+    "message": "No se pudo capturar el audio: $1"
+  },
+  "errorVideoRemoved": {
+    "message": "El video se quitó de la página."
+  },
+  "popupGrant": {
+    "message": "Permitir acceso a los sitios web"
+  },
+  "popupStart": {
+    "message": "Iniciar subtítulos"
+  },
+  "popupStop": {
+    "message": "Detener subtítulos"
+  },
+  "popupSettings": {
+    "message": "Ajustes"
+  },
+  "popupGetCompanion": {
+    "message": "Descargar la aplicación companion (Windows, Linux)"
+  },
+  "popupUnavailable": {
+    "message": "Los subtítulos no están disponibles en esta página. Si acabas de instalar la extensión, recarga la pestaña."
+  },
+  "popupNoVideo": {
+    "message": "No se encontró ningún video en esta página."
+  },
+  "popupNoProvider": {
+    "message": "ningún proveedor elegido"
+  },
+  "popupNeedsAccess": {
+    "message": "La extensión necesita acceso a los sitios web para leer el audio de los videos."
+  },
+  "popupAccessGranted": {
+    "message": "Acceso concedido. Recarga la pestaña para usar los subtítulos."
+  }
+}

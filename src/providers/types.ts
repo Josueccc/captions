@@ -9,6 +9,8 @@ export interface SettingField {
   placeholder?: string;
   help?: string;
   required?: boolean;
+  /** Rarely needed: shown under "Advanced options" on the settings page. */
+  advanced?: boolean;
 }
 
 export interface TranscriberConfig {
@@ -39,6 +41,8 @@ export interface ProviderDefinition {
   label: string;
   description: string;
   fields: SettingField[];
+  /** Checks the settings without transcribing (settings page "Test connection"); rejects with a readable reason. */
+  test?(config: TranscriberConfig): Promise<void>;
   create(config: TranscriberConfig, events: TranscriberEvents): Transcriber;
 }
 

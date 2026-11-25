@@ -1,0 +1,305 @@
+{
+  "extensionName": {
+    "message": "Captions"
+  },
+  "extensionDescription": {
+    "message": "Live captions transcribed from the video's actual audio, word for word. Made for language learning."
+  },
+  "commandToggle": {
+    "message": "Start/stop live captions on the current tab"
+  },
+  "optionsTitle": {
+    "message": "Captions settings"
+  },
+  "optionsHeading": {
+    "message": "Captions"
+  },
+  "optionsSubtitle": {
+    "message": "Settings"
+  },
+  "sectionTranscription": {
+    "message": "Transcription"
+  },
+  "sectionAudio": {
+    "message": "Audio source"
+  },
+  "sectionAdvanced": {
+    "message": "Advanced"
+  },
+  "fieldLanguage": {
+    "message": "Audio language"
+  },
+  "fieldLanguageHelp": {
+    "message": "The language spoken in the videos."
+  },
+  "fieldProvider": {
+    "message": "Transcription provider"
+  },
+  "fieldShow": {
+    "message": "Show"
+  },
+  "fieldHide": {
+    "message": "Hide"
+  },
+  "fieldRequired": {
+    "message": "Required"
+  },
+  "advancedOptions": {
+    "message": "Advanced options"
+  },
+  "testButton": {
+    "message": "Test connection"
+  },
+  "testRunning": {
+    "message": "Connecting…"
+  },
+  "testOk": {
+    "message": "Connection works."
+  },
+  "saving": {
+    "message": "Saving…"
+  },
+  "saved": {
+    "message": "Saved ✓"
+  },
+  "optionsNote": {
+    "message": "Changes are saved automatically and apply the next time you start captions. API keys are stored only in this browser's extension storage."
+  },
+  "shortcutLabel": {
+    "message": "Keyboard shortcut"
+  },
+  "shortcutHelp": {
+    "message": "Starts and stops captions on the current tab:"
+  },
+  "shortcutChange": {
+    "message": "Change"
+  },
+  "shortcutNone": {
+    "message": "not set"
+  },
+  "debugLabel": {
+    "message": "Show caption latency"
+  },
+  "debugHelp": {
+    "message": "Displays how far behind the audio each caption appears. For troubleshooting."
+  },
+  "audio_auto": {
+    "message": "Automatic"
+  },
+  "audio_auto_help": {
+    "message": "The video on the page; the companion for DRM-protected videos."
+  },
+  "audio_page": {
+    "message": "The video on the page"
+  },
+  "audio_page_help": {
+    "message": "Reads the audio straight from the video. Doesn't work with DRM."
+  },
+  "audio_tab": {
+    "message": "Companion: this tab's audio"
+  },
+  "audio_tab_help": {
+    "message": "Always records through the companion, only Firefox's sound."
+  },
+  "audio_system": {
+    "message": "Companion: all system audio"
+  },
+  "audio_system_help": {
+    "message": "Everything your speakers play. Use it if the tab's audio isn't found."
+  },
+  "companionHeading": {
+    "message": "System-audio companion"
+  },
+  "companionExplain": {
+    "message": "DRM-protected videos (Netflix, Disney+, Prime Video…) can't be read from the page. This small app, installed separately, records them from the sound output instead."
+  },
+  "companionAllDownloads": {
+    "message": "All downloads and instructions"
+  },
+  "companionRecheck": {
+    "message": "Check again"
+  },
+  "companionDownloadWindows": {
+    "message": "Download for Windows"
+  },
+  "companionDownloadLinux": {
+    "message": "Download for Linux"
+  },
+  "companion_checking_pill": {
+    "message": "Checking…"
+  },
+  "companion_installed_pill": {
+    "message": "Installed · v$1"
+  },
+  "companion_installed": {
+    "message": "DRM-protected videos will work."
+  },
+  "companion_missing_pill": {
+    "message": "Not installed"
+  },
+  "companion_missing": {
+    "message": "Only needed for DRM-protected videos. Download it, run it once, then click “Check again”."
+  },
+  "companion_missing_linux": {
+    "message": "Only needed for DRM-protected videos. Download it, unpack it and run ./captions-companion install (needs PipeWire), then click “Check again”."
+  },
+  "companion_outdated_pill": {
+    "message": "Update needed"
+  },
+  "companion_outdated": {
+    "message": "An older version is installed. Install the latest one; it replaces the old one."
+  },
+  "companion_broken_pill": {
+    "message": "Error"
+  },
+  "companion_broken": {
+    "message": "It's registered but Firefox couldn't start it ($1). Reinstalling usually fixes it."
+  },
+  "companion_unsupported_pill": {
+    "message": "Not available"
+  },
+  "companion_unsupported": {
+    "message": "The companion runs on Windows 10/11 and Linux. On this system only videos without DRM work."
+  },
+  "providerDeepgramLabel": {
+    "message": "Deepgram (cloud)"
+  },
+  "providerDeepgramDescription": {
+    "message": "Fast and accurate streaming speech-to-text. Needs an API key from deepgram.com (free credit on signup)."
+  },
+  "providerLocalLabel": {
+    "message": "Local server (WhisperLiveKit)"
+  },
+  "providerLocalDescription": {
+    "message": "Whisper on your own machine: free and private, but slower. Start it with server/run.sh from the project's repository."
+  },
+  "providerTestLabel": {
+    "message": "Test signal (no transcription)"
+  },
+  "providerTestDescription": {
+    "message": "Shows the audio level instead of text, to check that audio capture works on a site."
+  },
+  "fieldApiKey": {
+    "message": "API key"
+  },
+  "fieldDeepgramKeyHelp": {
+    "message": "Create one in the Deepgram console → API Keys."
+  },
+  "fieldModel": {
+    "message": "Model"
+  },
+  "modelNova3": {
+    "message": "Nova-3 (best)"
+  },
+  "modelNova2": {
+    "message": "Nova-2 (more languages)"
+  },
+  "fieldExtraParams": {
+    "message": "Extra query parameters"
+  },
+  "fieldDeepgramExtraHelp": {
+    "message": "Appended to the request URL. See the Deepgram streaming docs."
+  },
+  "fieldServerUrl": {
+    "message": "Server URL"
+  },
+  "fieldServerUrlHelp": {
+    "message": "Deepgram-compatible WebSocket endpoint."
+  },
+  "fieldApiToken": {
+    "message": "API token"
+  },
+  "fieldApiTokenHelp": {
+    "message": "Only if the server was started with --api-token."
+  },
+  "testSignalSilence": {
+    "message": "🔇 silence ($1–$2 s) — DRM-protected or muted?"
+  },
+  "testSignalLevel": {
+    "message": "🔊 $1 dB ($2–$3 s)"
+  },
+  "statusConnecting": {
+    "message": "Connecting…"
+  },
+  "statusLive": {
+    "message": "Live"
+  },
+  "errorTranscription": {
+    "message": "Transcription error"
+  },
+  "errorDeepgramKeyMissing": {
+    "message": "Deepgram API key missing — set it in the extension settings."
+  },
+  "errorDeepgramKeyInvalid": {
+    "message": "Deepgram rejected the API key."
+  },
+  "errorDeepgramModelLanguage": {
+    "message": "The API key is valid, but the model $1 doesn't support the language “$2”. Try another model."
+  },
+  "errorDeepgramConnect": {
+    "message": "Could not connect to Deepgram. Check the API key, and that the model supports this language."
+  },
+  "errorLocalConnect": {
+    "message": "Could not connect to $1. Is the local server running?"
+  },
+  "errorConnectionClosed": {
+    "message": "Connection closed (code $1)."
+  },
+  "errorCompanionMissing": {
+    "message": "DRM-protected videos need the Captions companion app, which is not installed. Open the Captions toolbar button to get it."
+  },
+  "errorCompanionStopped": {
+    "message": "The system-audio companion stopped."
+  },
+  "errorCompanionStoppedReason": {
+    "message": "The system-audio companion stopped: $1"
+  },
+  "errorUnknownProvider": {
+    "message": "Unknown provider “$1”. Pick one in the settings."
+  },
+  "errorProviderStart": {
+    "message": "Failed to start $1: $2"
+  },
+  "errorAudioBlocked": {
+    "message": "The browser blocked audio processing. Click the page and try again."
+  },
+  "errorLostConnection": {
+    "message": "Lost connection to the extension. Toggle captions to retry."
+  },
+  "errorCapture": {
+    "message": "Could not capture audio: $1"
+  },
+  "errorVideoRemoved": {
+    "message": "The video was removed from the page."
+  },
+  "popupGrant": {
+    "message": "Allow access to websites"
+  },
+  "popupStart": {
+    "message": "Start captions"
+  },
+  "popupStop": {
+    "message": "Stop captions"
+  },
+  "popupSettings": {
+    "message": "Settings"
+  },
+  "popupGetCompanion": {
+    "message": "Download the companion app (Windows, Linux)"
+  },
+  "popupUnavailable": {
+    "message": "Captions are not available on this page. If you just installed the extension, reload the tab."
+  },
+  "popupNoVideo": {
+    "message": "No video found on this page."
+  },
+  "popupNoProvider": {
+    "message": "no provider selected"
+  },
+  "popupNeedsAccess": {
+    "message": "The extension needs access to websites to read video audio."
+  },
+  "popupAccessGranted": {
+    "message": "Access granted. Reload the tab to use captions."
+  }
+}

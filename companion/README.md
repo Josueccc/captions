@@ -12,10 +12,11 @@ a video and stops it with them.
 
 From the [releases](https://github.com/Josueccc/captions/releases/latest):
 
-- **Windows 10/11**: run `captions-companion-…-windows-x64-setup.exe` (per-user,
+- **Windows 10/11**: run `captions-companion-windows-x64-setup.exe` (per-user,
   no admin rights). Uninstall it from Settings → Apps. The `-portable.exe`
   works too: double-click it once and it installs itself the same way.
-- **Linux** (PipeWire, with `pw-record` and `pw-dump`): unpack the tarball and run
+- **Linux** (PipeWire, with `pw-record` and `pw-dump`): unpack
+  `captions-companion-linux-x64.tar.gz` and run
   `./captions-companion install`. It copies itself to
   `~/.local/share/captions-companion/`, so the download can be deleted afterwards.
   `captions-companion uninstall` removes it.
@@ -60,6 +61,9 @@ cargo test
 cargo clippy --all-targets
 cargo clippy --target x86_64-pc-windows-gnu   # type-checks the Windows code from Linux
 ```
+
+The extension's settings page sends `{"type": "hello"}` to show whether the
+companion is installed; it answers with its version and starts nothing.
 
 `src/main.rs` has the message protocol; `src/pipewire.rs` and `src/wasapi.rs`
 are the Linux and Windows capture; `src/register.rs` is `install`/`uninstall`.
