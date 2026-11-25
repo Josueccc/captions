@@ -21,19 +21,17 @@ export const DEFAULT_SETTINGS: Settings = {
   debug: false,
 };
 
-export const LANGUAGES: [code: string, label: string][] = [
-  ['fr', 'French'],
-  ['de', 'German'],
-  ['es', 'Spanish'],
-  ['it', 'Italian'],
-  ['pt', 'Portuguese'],
-  ['nl', 'Dutch'],
-  ['en', 'English'],
-  ['ja', 'Japanese'],
-  ['ko', 'Korean'],
-  ['zh', 'Chinese'],
-  ['ru', 'Russian'],
-];
+/** Languages offered for the audio, as BCP 47 codes (what Deepgram and Whisper take). */
+export const LANGUAGES = ['fr', 'de', 'es', 'it', 'pt', 'nl', 'en', 'ja', 'ko', 'zh', 'ru'];
+
+/** The language's name in the browser's own language ("French", "francés"…). */
+export function languageName(code: string): string {
+  try {
+    return new Intl.DisplayNames([browser.i18n.getUILanguage()], { type: 'language' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
 
 export async function loadSettings(): Promise<Settings> {
   const { settings } = await browser.storage.local.get('settings');

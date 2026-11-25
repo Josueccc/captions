@@ -35,6 +35,15 @@ export type Help = 'install-companion';
 export const COMPANION_URL = 'https://github.com/Josueccc/captions/releases/latest';
 
 /**
+ * Direct downloads from the latest release, by runtime.getPlatformInfo().os.
+ * The CI names these assets without a version so the links stay valid.
+ */
+export const COMPANION_DOWNLOADS: Partial<Record<browser.runtime.PlatformOs, string>> = {
+  win: `${COMPANION_URL}/download/auris-companion-windows-x64-setup.exe`,
+  linux: `${COMPANION_URL}/download/auris-companion-linux-x64.tar.gz`,
+};
+
+/**
  * Where the audio comes from: the page's <video> element, or the system-audio
  * companion (for DRM-protected videos, which the page can't capture).
  */

@@ -1,6 +1,17 @@
 import { streamParams } from './deepgram';
-import { DeepgramStream } from './deepgram-stream';
-import type { ProviderDefinition } from './types';
+import { t } from '../shared/i18n';
+import { DeepgramStream, probe } from './deepgram-stream';
+import type { ProviderDefinition, TranscriberConfig } from './types';
+
+function target(config: TranscriberConfig) {
+  const { url, token, extraParams } = config.options;
+  const params = streamParams(config.language, extraParams);
+  if (token) params.set('token', token);
+  return {
+    url: `${url}${url.includes('?') ? '&' : '?'}${params}`,
+    connectError: t('errorLocalConnect', url),
+  };
+}
 
 /**
  * WhisperLiveKit (or any server with a Deepgram-compatible /v1/listen
@@ -8,43 +19,32 @@ import type { ProviderDefinition } from './types';
  */
 export const localServerProvider: ProviderDefinition = {
   id: 'local-server',
-  label: 'Local server (WhisperLiveKit)',
-  description:
-    'Whisper running on your own machine: free and private, but slower than the cloud. Start it with server/run.sh (see server/README.md in the repo).',
+  label: t('providerLocalLabel'),
+  description: t('providerLocalDescription'),
   fields: [
     {
       key: 'url',
-      label: 'Server URL',
+      label: t('fieldServerUrl'),
       type: 'text',
       default: 'ws://localhost:8000/v1/listen',
-      help: 'Deepgram-compatible WebSocket endpoint.',
+      help: t('fieldServerUrlHelp'),
     },
     {
       key: 'token',
-      label: 'API token',
+      label: t('fieldApiToken'),
       type: 'password',
-      help: 'Only if the server was started with --api-token.',
+      help: t('fieldApiTokenHelp'),
+      advanced: true,
     },
     {
       key: 'extraParams',
-      label: 'Extra query parameters',
+      label: t('fieldExtraParams'),
       type: 'text',
       placeholder: 'endpointing=500',
+      advanced: true,
     },
   ],
-  create(config, events) {
-    const { url, token, extraParams } = config.options;
-    const params = streamParams(config.language, extraParams);
-    if (token) params.set('token', token);
-    return new DeepgramStream(
-      {
-        url: `${url}${url.includes('?') ? '&' : '?'}${params}`,
-        flush: 'reconnect',
-        restartOnStall: true,
-        idPrefix: 'local',
-        connectError: `Could not connect to ${url}. Is the local server running?`,
-      },
-      events,
-    );
-  },
+  test: (config) => probe(target(config)),
+  create: (config, events) =>
+    new DeepgramStream({ ...target(config), flush: 'reconnect', restartOnStall: true, idPrefix: 'local' }, events),
 };

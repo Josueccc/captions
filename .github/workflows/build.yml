@@ -32,12 +32,14 @@ jobs:
       - run: cargo clippy --locked --all-targets -- -D warnings
       # Static (musl) so it runs on any distribution, whatever its glibc.
       - run: cargo build --release --locked --target x86_64-unknown-linux-musl
+      # Asset names carry no version: the extension links to
+      # releases/latest/download/<name>, which must stay valid across releases.
       - name: Package
         run: |
-          version=$(cargo pkgid | sed 's/.*[#@]//')
-          dir=captions-companion-$version-linux-x64
+          dir=auris-companion-linux-x64
           mkdir "$dir"
-          cp target/x86_64-unknown-linux-musl/release/captions-companion README.md "$dir/"
+          cp target/x86_64-unknown-linux-musl/release/auris-companion README.md "$dir/"
+          cp ../LICENSE "$dir/"
           tar czf "$dir.tar.gz" "$dir"
       - uses: actions/upload-artifact@v4
         with:
@@ -58,14 +60,14 @@ jobs:
         run: |
           $version = (cargo pkgid) -replace '.*[#@]', ''
           choco install innosetup --no-progress -y
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" packaging\windows\captions-companion.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" packaging\windows\auris-companion.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item packaging\windows\Output\*.exe .
-          Copy-Item target\release\captions-companion.exe "captions-companion-$version-windows-x64-portable.exe"
+          Copy-Item target\release\auris-companion.exe auris-companion-windows-x64-portable.exe
       - uses: actions/upload-artifact@v4
         with:
           name: companion-windows
-          path: companion/captions-companion-*.exe
+          path: companion/auris-companion-*.exe
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -74,13 +76,23 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+      - name: Check versions match the tag
+        run: |
+          tag=${GITHUB_REF_NAME#v}
+          for v in "$(jq -r .version src/manifest.json)" "$(jq -r .version package.json)" \
+                   "$(sed -n 's/^version = "\(.*\)"/\1/p' companion/Cargo.toml)"; do
+            [ "$v" = "$tag" ] || { echo "::error::version $v doesn't match tag $GITHUB_REF_NAME"; exit 1; }
+          done
       - uses: actions/download-artifact@v4
         with:
           pattern: companion-*
           merge-multiple: true
           path: downloads
-      # A draft: add the signed .xpi (npm run sign) and publish it by hand.
+      # A draft: check it, then publish it by hand. The extension itself is on
+      # addons.mozilla.org (see amo/README.md); this release is for the companion.
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
+          body_path: .github/release-notes.md
           files: downloads/*

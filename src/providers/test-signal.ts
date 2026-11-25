@@ -1,3 +1,4 @@
+import { t } from '../shared/i18n';
 import { SAMPLE_RATE } from '../shared/types';
 import type { ProviderDefinition, Transcriber, TranscriberEvents } from './types';
 
@@ -40,8 +41,8 @@ class TestSignalTranscriber implements Transcriber {
     const end = start + WINDOW_SECONDS;
     const text =
       db < SILENCE_DB
-        ? `🔇 silence (${start.toFixed(0)}–${end.toFixed(0)} s) — DRM-protected or muted?`
-        : `🔊 ${db.toFixed(1)} dB (${start.toFixed(0)}–${end.toFixed(0)} s)`;
+        ? t('testSignalSilence', start.toFixed(0), end.toFixed(0))
+        : t('testSignalLevel', db.toFixed(1), start.toFixed(0), end.toFixed(0));
     // One "word" spanning the window, so debug mode measures the pipeline's own delay.
     const words = [{ text, start, end }];
     this.events.segment({ id: `test-${this.count++}`, text, start, end, words, final: true });
@@ -53,8 +54,8 @@ class TestSignalTranscriber implements Transcriber {
 
 export const testSignalProvider: ProviderDefinition = {
   id: 'test-signal',
-  label: 'Test signal (no transcription)',
-  description: 'Shows the audio level instead of text. Use it to check that audio capture works on a site.',
+  label: t('providerTestLabel'),
+  description: t('providerTestDescription'),
   fields: [],
   create: (_config, events) => new TestSignalTranscriber(events),
 };

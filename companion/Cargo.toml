@@ -1,8 +1,9 @@
 [package]
-name = "captions-companion"
-version = "0.2.0"
+name = "auris-companion"
+version = "0.3.0"
 edition = "2024"
-description = "Native-messaging host that streams Firefox's audio output to the Captions extension"
+description = "Native-messaging host that streams Firefox's audio output to the Auris extension"
+license = "GPL-3.0-or-later"
 publish = false
 
 [dependencies]

@@ -12,22 +12,23 @@ a video and stops it with them.
 
 From the [releases](https://github.com/Josueccc/captions/releases/latest):
 
-- **Windows 10/11**: run `captions-companion-…-windows-x64-setup.exe` (per-user,
+- **Windows 10/11**: run `auris-companion-windows-x64-setup.exe` (per-user,
   no admin rights). Uninstall it from Settings → Apps. The `-portable.exe`
   works too: double-click it once and it installs itself the same way.
-- **Linux** (PipeWire, with `pw-record` and `pw-dump`): unpack the tarball and run
-  `./captions-companion install`. It copies itself to
-  `~/.local/share/captions-companion/`, so the download can be deleted afterwards.
-  `captions-companion uninstall` removes it.
+- **Linux** (PipeWire, with `pw-record` and `pw-dump`): unpack
+  `auris-companion-linux-x64.tar.gz` and run
+  `./auris-companion install`. It copies itself to
+  `~/.local/share/auris-companion/`, so the download can be deleted afterwards.
+  `auris-companion uninstall` removes it.
 
 From source (needs Rust): `./companion/install.sh` builds it and runs `install`;
 `./companion/install.sh --uninstall` removes it. Rerun it after changing the code,
 since Firefox starts the installed copy.
 
-`install` registers the host for the extension ID `captions@zerathul.local`: a
+`install` registers the host for the extension ID `auris@josueccc`: a
 manifest in `~/.mozilla/native-messaging-hosts/` on Linux, and on Windows a
 manifest next to the executable plus the registry key
-`HKCU\Software\Mozilla\NativeMessagingHosts\captions_companion`. Flatpak and Snap
+`HKCU\Software\Mozilla\NativeMessagingHosts\auris_companion`. Flatpak and Snap
 builds of Firefox are sandboxed and may not be able to start it.
 
 ## What it records
@@ -60,6 +61,9 @@ cargo test
 cargo clippy --all-targets
 cargo clippy --target x86_64-pc-windows-gnu   # type-checks the Windows code from Linux
 ```
+
+The extension's settings page sends `{"type": "hello"}` to show whether the
+companion is installed; it answers with its version and starts nothing.
 
 `src/main.rs` has the message protocol; `src/pipewire.rs` and `src/wasapi.rs`
 are the Linux and Windows capture; `src/register.rs` is `install`/`uninstall`.

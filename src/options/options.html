@@ -2,50 +2,95 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Captions settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="optionsTitle">Auris settings</title>
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
+    <header class="topbar">
+      <div class="brand">
+        <img src="icons/icon.svg" alt="" width="28" height="28" />
+        <div>
+          <h1 data-i18n="optionsHeading">Auris</h1>
+          <p class="muted" data-i18n="optionsSubtitle">Settings</p>
+        </div>
+      </div>
+      <span id="save-state" class="save-state" role="status" aria-live="polite"></span>
+    </header>
+
     <main>
-      <h1>Captions settings</h1>
-      <form id="form">
-        <label>
-          <span>Audio language</span>
+      <!-- Transcription -->
+      <section class="card" aria-labelledby="h-transcription">
+        <h2 id="h-transcription" data-i18n="sectionTranscription">Transcription</h2>
+
+        <label class="field">
+          <span class="label" data-i18n="fieldLanguage">Audio language</span>
           <select id="language"></select>
+          <small data-i18n="fieldLanguageHelp">The language spoken in the videos.</small>
         </label>
-        <label>
-          <span>Transcription provider</span>
-          <select id="provider"></select>
-          <small id="provider-description"></small>
-        </label>
-        <fieldset id="provider-fields"></fieldset>
-        <label>
-          <span>Audio source</span>
-          <select id="audio-source">
-            <option value="auto">Automatic: the video, or the companion for DRM videos</option>
-            <option value="page">The video on the page</option>
-            <option value="tab">Companion: this tab's audio</option>
-            <option value="system">Companion: all system audio</option>
-          </select>
-          <small>
-            DRM-protected videos (Netflix, Disney+, Prime…) can't be read from the page; the
-            system-audio companion app records them from the sound output instead.
-            <a id="companion-link" target="_blank">Download it</a> (Windows 10/11, or Linux with PipeWire)
-            and install it once.
-          </small>
-        </label>
+
+        <div class="field">
+          <span class="label" id="provider-label" data-i18n="fieldProvider">Transcription provider</span>
+          <div id="providers" class="choices" role="radiogroup" aria-labelledby="provider-label"></div>
+        </div>
+
+        <div id="provider-fields" class="subfields"></div>
+
+        <div class="test-row" id="test-row">
+          <button type="button" id="test" class="secondary" data-i18n="testButton">Test connection</button>
+          <span id="test-result" class="test-result" role="status" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <!-- Audio source -->
+      <section class="card" aria-labelledby="h-audio">
+        <h2 id="h-audio" data-i18n="sectionAudio">Audio source</h2>
+        <div id="audio-sources" class="choices" role="radiogroup" aria-labelledby="h-audio"></div>
+
+        <div class="companion" id="companion">
+          <div class="companion-head">
+            <div>
+              <h3 data-i18n="companionHeading">System-audio companion</h3>
+              <p class="muted" data-i18n="companionExplain">
+                DRM-protected videos (Netflix, Disney+, Prime Video…) can't be read from the page. This small
+                app, installed separately, records them from the sound output instead.
+              </p>
+            </div>
+            <span id="companion-pill" class="pill" data-state="checking"></span>
+          </div>
+          <p id="companion-detail" class="companion-detail"></p>
+          <div class="companion-actions">
+            <a id="companion-download" class="button" target="_blank" rel="noopener" hidden></a>
+            <a id="companion-all" class="link" target="_blank" rel="noopener" data-i18n="companionAllDownloads">
+              All downloads and instructions
+            </a>
+            <button type="button" id="companion-recheck" class="link" data-i18n="companionRecheck">Check again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advanced -->
+      <section class="card" aria-labelledby="h-advanced">
+        <h2 id="h-advanced" data-i18n="sectionAdvanced">Advanced</h2>
+        <div class="row">
+          <div>
+            <span class="label" data-i18n="shortcutLabel">Keyboard shortcut</span>
+            <small><span data-i18n="shortcutHelp">Starts and stops captions on the current tab:</span> <kbd id="shortcut"></kbd></small>
+          </div>
+          <button type="button" id="shortcut-change" class="secondary" data-i18n="shortcutChange">Change</button>
+        </div>
         <label class="check">
           <input type="checkbox" id="debug" />
-          <span>Show caption latency (debug)</span>
+          <span>
+            <span class="label" data-i18n="debugLabel">Show caption latency</span>
+            <small data-i18n="debugHelp">Displays how far behind the audio each caption appears. For troubleshooting.</small>
+          </span>
         </label>
-        <div class="actions">
-          <button type="submit">Save</button>
-          <span id="saved" hidden>Saved ✓</span>
-        </div>
-      </form>
-      <p class="note">
-        Settings apply the next time you start captions. API keys are stored only in this browser's
-        extension storage.
+      </section>
+
+      <p class="note" data-i18n="optionsNote">
+        Changes are saved automatically and apply the next time you start captions. API keys are stored only in
+        this browser's extension storage.
       </p>
     </main>
     <script src="options.js"></script>

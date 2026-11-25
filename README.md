@@ -1,4 +1,4 @@
-# Captions
+# Auris
 
 Firefox extension that shows live captions transcribed from the video's actual
 audio, so the text matches what's said word for word (unlike platform subtitles,
@@ -17,11 +17,18 @@ npm run lint
 Or load it manually: `about:debugging` → This Firefox → Load Temporary Add-on →
 `dist/manifest.json`.
 
-## Install permanently
+## Install
 
-Release Firefox only keeps signed add-ons. To sign it privately (unlisted, not
-published on addons.mozilla.org), create API credentials at
-<https://addons.mozilla.org/developers/addon/api/key/>, then:
+- **Extension**: from addons.mozilla.org (Firefox 140 or later, desktop).
+- **Companion app**, only for DRM-protected sites (Netflix, Disney+, Prime
+  Video…): from the [latest release](https://github.com/Josueccc/captions/releases/latest).
+  Windows 10/11 installer, or a Linux tarball (PipeWire); see
+  [companion/README.md](companion/README.md). The extension's settings page
+  shows whether it's installed and links to the right download.
+
+To install a build of your own permanently instead, sign it privately
+(unlisted) with AMO API credentials
+(<https://addons.mozilla.org/developers/addon/api/key/>):
 
 ```sh
 export WEB_EXT_API_KEY=user:12345:67   # JWT issuer
@@ -29,22 +36,21 @@ export WEB_EXT_API_SECRET=...          # JWT secret
 npm run sign
 ```
 
-Install the `.xpi` from `artifacts/` via `about:addons` → gear → Install Add-on
-From File. Bump `version` in `src/manifest.json` before each new signing: AMO
-rejects a version it has already signed.
+and install the `.xpi` from `artifacts/` via `about:addons` → gear → Install
+Add-on From File. Bump `version` in `src/manifest.json` first: AMO rejects a
+version it has already signed.
 
 ## Use
 
-1. Open the extension's settings, pick the audio language and a provider:
+1. Open the extension's settings, pick the audio language and a provider, and
+   use **Test connection** to check it:
    - **Deepgram (cloud)**: fastest (~0.6 s behind the audio); needs an API key.
    - **Local server (WhisperLiveKit)**: Whisper on your own GPU/CPU, free and
      private but slower (1–4 s). See [server/README.md](server/README.md).
 2. For DRM-protected sites (Netflix, Disney+, Prime), install the system-audio
-   companion app once, from the
-   [releases](https://github.com/Josueccc/captions/releases/latest) (Windows
-   installer, or Linux with PipeWire) or from source with `./companion/install.sh`;
-   see [companion/README.md](companion/README.md). It's used automatically for
-   videos with DRM, and the popup links to it when it's missing.
+   companion app once (see *Install*), or build it from source with
+   `./companion/install.sh`. It's used automatically for videos with DRM; the
+   settings page shows its status and the popup links to it when it's missing.
 3. On a page with a video, click the toolbar icon → **Start captions**, or press
    **Alt+Shift+C**.
 
@@ -55,16 +61,20 @@ DRM video from the page gives nothing; the companion route does.
 ## Release
 
 1. Bump the version in `src/manifest.json`, `package.json` and
-   `companion/Cargo.toml` (the extension and companion versions can differ).
+   `companion/Cargo.toml` (CI checks the three match the tag), and commit.
 2. Push a `vX.Y.Z` tag. CI (`.github/workflows/build.yml`) builds the companion
-   for Linux and Windows and creates a draft GitHub release with them.
-3. Submit the extension to addons.mozilla.org: upload the `npm run package`
-   zip, and since the code is bundled, a source archive (`git archive -o
-   source.zip HEAD`) with the build steps for reviewers: Node 22,
-   `npm ci && npm run build`, output in `dist/`. Or `npm run sign` for a
-   self-distributed (unlisted) `.xpi` to attach to the release.
-4. Publish the draft release. The extension links to its latest release for the
-   companion download.
+   for Linux and Windows and creates a draft GitHub release with it and the
+   notes in `.github/release-notes.md`.
+3. Publish the draft. The extension links to
+   `releases/latest/download/<asset>`, so asset names carry no version.
+4. Submit the extension to addons.mozilla.org with `npm run submit`; see
+   [amo/README.md](amo/README.md).
+
+## Translations
+
+UI strings are in `src/_locales/<lang>/messages.json` (English and Spanish), read
+with `t()` from `src/shared/i18n.ts`; static markup uses `data-i18n="key"`. Firefox
+picks the browser's language and falls back to English.
 
 ## End-to-end harness
 
@@ -122,3 +132,8 @@ content script (per tab)                    background                    provid
   `video.currentTime` using the media time + playback rate attached to every
   audio chunk, so seeking, pausing and slow playback keep captions in sync, and
   rewinding replays cached lines.
+
+## License
+
+[GPL-3.0-or-later](LICENSE): you may use, change and share this code, and
+versions you distribute must stay under the same license with their source.

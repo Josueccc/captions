@@ -1,4 +1,4 @@
-//! Native-messaging host: streams Firefox's own audio output to the extension.
+//! Auris companion. Native-messaging host: streams Firefox's own audio output to the extension.
 //!
 //! DRM-protected videos (Netflix, Disney+, Prime) can't be captured from the page:
 //! mozCaptureStream() on an encrypted <video> yields silence. The decoded audio
@@ -8,13 +8,16 @@
 //!
 //! Firefox starts it (see register.rs) and talks over stdin/stdout:
 //!
-//!   extension -> host  {"type": "start", "source": "tab" | "system", "title": "..."}
+//!   extension -> host  {"type": "hello"}
+//!                      {"type": "start", "source": "tab" | "system", "title": "..."}
 //!                      {"type": "title", "title": "..."}
-//!   host -> extension  {"type": "audio", "pcm": base64, "t": ms since epoch when the chunk ended}
+//!   host -> extension  {"type": "hello", "version": "x.y.z", "os": "linux" | "windows"}
+//!                      {"type": "audio", "pcm": base64, "t": ms since epoch when the chunk ended}
 //!                      {"type": "status", "message": "..."}
 //!                      {"type": "error", "message": "..."}
 //!
-//! "tab" records Firefox's own audio, "system" everything the default output plays.
+//! "hello" lets the settings page check that the companion is installed and which
+//! version it is; it starts nothing. "tab" records Firefox's own audio, "system" everything the default output plays.
 
 mod messaging;
 mod register;
@@ -51,12 +54,12 @@ pub struct State {
     pub stopped: AtomicBool,
 }
 
-const USAGE: &str = "Captions companion: records Firefox's audio for the Captions extension.
+const USAGE: &str = "Auris companion: records Firefox's audio for the Auris extension.
 
 Usage:
-  captions-companion install     copy to a per-user folder and register with Firefox
-  captions-companion uninstall   undo install
-  captions-companion --version
+  auris-companion install     copy to a per-user folder and register with Firefox
+  auris-companion uninstall   undo install
+  auris-companion --version
 
 Firefox starts it by itself once it's installed.";
 
@@ -66,7 +69,7 @@ fn main() -> ExitCode {
         Some("install") => report(register::install()),
         Some("uninstall") => report(register::uninstall()),
         Some("--version" | "-V") => {
-            println!("captions-companion {}", env!("CARGO_PKG_VERSION"));
+            println!("auris-companion {}", env!("CARGO_PKG_VERSION"));
             ExitCode::SUCCESS
         }
         // Firefox runs it with pipes and passes the manifest path and extension id.
@@ -106,6 +109,11 @@ fn report(result: Result<String, String>) -> ExitCode {
     }
 }
 
+/// The reply to "hello": what the settings page shows about the installed companion.
+fn hello() -> serde_json::Value {
+    serde_json::json!({ "type": "hello", "version": env!("CARGO_PKG_VERSION"), "os": env::consts::OS })
+}
+
 fn host() {
     let state = Arc::new(State { title: Mutex::new(String::new()), stopped: AtomicBool::new(false) });
     let mut worker = None;
@@ -118,6 +126,7 @@ fn host() {
                 let state = state.clone();
                 worker = Some(thread::spawn(move || capture::run(source, &state)));
             }
+            Some("hello") => messaging::send(&hello()),
             Some("title") => *state.title.lock().unwrap() = title,
             _ => {}
         }
@@ -126,5 +135,18 @@ fn host() {
     state.stopped.store(true, Ordering::Relaxed);
     if let Some(worker) = worker {
         let _ = worker.join();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hello_reports_version_and_os() {
+        let reply = hello();
+        assert_eq!(reply["type"], "hello");
+        assert_eq!(reply["version"], env!("CARGO_PKG_VERSION"));
+        assert_eq!(reply["os"], env::consts::OS);
     }
 }

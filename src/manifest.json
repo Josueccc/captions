@@ -1,55 +1,76 @@
 {
   "manifest_version": 3,
-  "name": "Captions",
-  "version": "0.2.0",
-  "description": "Live captions transcribed from the actual audio, for language learning.",
+  "name": "__MSG_extensionName__",
+  "version": "0.3.0",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "icons": {
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Captions",
+    "default_title": "__MSG_extensionName__",
     "default_icon": "icons/icon.svg"
   },
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "nativeMessaging"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": [
+    "storage",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["pcm-worklet.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "pcm-worklet.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "commands": {
     "toggle-captions": {
-      "suggested_key": { "default": "Alt+Shift+C" },
-      "description": "Start/stop live captions on the current tab"
+      "suggested_key": {
+        "default": "Alt+Shift+C"
+      },
+      "description": "__MSG_commandToggle__"
     }
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "captions@zerathul.local",
+      "id": "auris@josueccc",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": ["websiteContent"]
+        "required": [
+          "websiteContent"
+        ]
       }
     }
-  }
+  },
+  "homepage_url": "https://github.com/Josueccc/captions"
 }

@@ -1,7 +1,7 @@
+import { COMPANION_HOST as HOST } from '../shared/companion-check';
 import { base64ToInt16 } from '../shared/encoding';
+import { t } from '../shared/i18n';
 import type { CompanionSource, Help } from '../shared/types';
-
-const HOST = 'captions_companion';
 
 type FromHost =
   | { type: 'audio'; pcm: string; t: number }
@@ -39,12 +39,9 @@ export class Companion {
       if (this.stopped) return;
       const error = port.error?.message ?? '';
       if (/No such native application|not found/i.test(error)) {
-        events.error(
-          'DRM-protected videos need the Captions companion app, which is not installed. Open the Captions toolbar button to get it.',
-          'install-companion',
-        );
+        events.error(t('errorCompanionMissing'), 'install-companion');
       } else {
-        events.error(`The system-audio companion stopped${error ? `: ${error}` : '.'}`);
+        events.error(error ? t('errorCompanionStoppedReason', error) : t('errorCompanionStopped'));
       }
     });
     this.port.postMessage({ type: 'start', source, title });

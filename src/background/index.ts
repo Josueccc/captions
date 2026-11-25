@@ -5,6 +5,7 @@ import { loadSettings } from '../shared/settings';
 import { PORT_NAME, SAMPLE_RATE, type Help, type SessionStatus, type TabRequest, type ToBackground, type ToContent } from '../shared/types';
 import { Companion } from './companion';
 import { MediaClock } from './media-clock';
+import { t } from '../shared/i18n';
 
 type Clock = Extract<ToBackground, { type: 'clock' }>;
 
@@ -75,7 +76,7 @@ class Session {
     const settings = await loadSettings();
     const provider = getProvider(settings.provider);
     if (!provider) {
-      this.status('error', `Unknown provider "${settings.provider}". Pick one in the options.`);
+      this.status('error', t('errorUnknownProvider', settings.provider));
       return;
     }
     if (this.closed) return;
@@ -90,7 +91,7 @@ class Session {
     try {
       this.transcriber.start();
     } catch (err) {
-      this.status('error', `Failed to start ${provider.label}: ${err}`);
+      this.status('error', t('errorProviderStart', provider.label, String(err)));
       return;
     }
     if (msg.route === 'system') {

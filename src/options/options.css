@@ -1,77 +1,383 @@
 :root {
   color-scheme: light dark;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --text: #1f2328;
+  --muted: #656d76;
+  --border: #d0d7de;
   --accent: #1f6feb;
-  --muted: #6e7781;
-  --border: #8c959f66;
+  --accent-soft: #ddf4ff;
+  --ok: #1a7f37;
+  --ok-soft: #dafbe1;
+  --warn: #9a6700;
+  --warn-soft: #fff8c5;
+  --error: #cf222e;
+  --error-soft: #ffebe9;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --text: #e6edf3;
+    --muted: #8d96a0;
+    --border: #30363d;
+    --accent: #4493f8;
+    --accent-soft: #121d2f;
+    --ok: #3fb950;
+    --ok-soft: #12261e;
+    --warn: #d29922;
+    --warn-soft: #272115;
+    --error: #f85149;
+    --error-soft: #25171c;
+  }
+}
+
+* {
+  box-sizing: border-box;
 }
 body {
   margin: 0;
-  font: 15px system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, sans-serif;
+}
+[hidden] {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 16px 12px;
+  background: var(--bg);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand h1 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.brand p {
+  margin: 0;
+  font-size: 13px;
 }
 main {
-  max-width: 560px;
-  margin: 40px auto;
-  padding: 0 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
 }
-h1 {
-  font-size: 22px;
+.card {
+  margin: 0 0 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
-label {
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+.muted,
+small {
+  color: var(--muted);
+}
+small {
   display: block;
-  margin: 18px 0;
+  margin-top: 4px;
+  font-size: 13px;
 }
-label > span {
+.note {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- fields */
+
+.field {
   display: block;
-  font-weight: 600;
+  margin: 0 0 18px;
+}
+.label {
+  display: block;
   margin-bottom: 6px;
+  font-weight: 600;
 }
-input,
+.required {
+  color: var(--error);
+}
+input[type='text'],
+input[type='password'],
 select {
-  box-sizing: border-box;
   width: 100%;
-  padding: 8px;
+  padding: 8px 10px;
+  background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
   font: inherit;
 }
-label.check {
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+.choice:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.with-button {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
-label.check input {
-  width: auto;
+.with-button input {
+  flex: 1;
+  min-width: 0;
 }
-label.check span {
-  margin: 0;
-}
-small,
-.note {
-  display: block;
-  margin-top: 6px;
-  color: var(--muted);
-  font-size: 13px;
-}
-fieldset {
+.subfields {
+  margin: 0 0 4px;
+  padding: 16px 16px 0;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 0 16px;
 }
-fieldset:empty {
-  display: none;
+details.advanced {
+  margin: 0 0 16px;
 }
-.actions {
+details.advanced summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* ---------------------------------------------------------------- choices (radio cards) */
+
+.choices {
+  display: grid;
+  gap: 8px;
+}
+.choice {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
 }
-button {
-  padding: 8px 20px;
-  border: 0;
+.choice:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.choice input {
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+}
+.choice-title {
+  font-weight: 600;
+}
+.choice small {
+  margin-top: 2px;
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+button,
+a.button {
+  display: inline-block;
+  padding: 7px 16px;
+  border: 1px solid transparent;
   border-radius: 6px;
   background: var(--accent);
   color: #fff;
   font: inherit;
+  font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
+}
+button.secondary,
+button.reveal {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+button.reveal {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+button.link,
+a.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: normal;
+  font-size: 14px;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------- test connection */
+
+.test-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.test-result {
+  font-size: 14px;
+}
+.test-result[data-state='pending'] {
+  color: var(--muted);
+}
+.test-result[data-state='ok'] {
+  color: var(--ok);
+}
+.test-result[data-state='ok']::before {
+  content: '✓ ';
+}
+.test-result[data-state='error'] {
+  color: var(--error);
+}
+
+/* ---------------------------------------------------------------- companion */
+
+.companion {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: opacity 0.15s;
+}
+.companion.inactive {
+  opacity: 0.6;
+}
+.companion-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.companion h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.companion-head p {
+  margin: 0;
+  font-size: 14px;
+}
+.companion-detail {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.companion-detail:empty {
+  display: none;
+}
+.companion-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pill {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.pill[data-state='installed'] {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-color: transparent;
+}
+.pill[data-state='missing'],
+.pill[data-state='outdated'] {
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-color: transparent;
+}
+.pill[data-state='broken'] {
+  background: var(--error-soft);
+  color: var(--error);
+  border-color: transparent;
+}
+
+/* ---------------------------------------------------------------- advanced */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.row .label {
+  margin-bottom: 0;
+}
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font: 12px ui-monospace, monospace;
+  color: var(--text);
+}
+label.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+label.check input {
+  margin: 4px 0 0;
+  accent-color: var(--accent);
+}
+label.check .label {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------- save state */
+
+.save-state {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 1em;
+}
+.save-state[data-state='saved'] {
+  color: var(--ok);
+}
+
+@media (max-width: 520px) {
+  .companion-head,
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pill {
+    align-self: flex-start;
+  }
 }

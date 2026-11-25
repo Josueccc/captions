@@ -11,6 +11,7 @@ const STATIC = [
   ['src/options/options.html', 'options.html'],
   ['src/options/options.css', 'options.css'],
   ['src/icons', 'icons'],
+  ['src/_locales', '_locales'],
 ];
 
 async function copyStatic() {

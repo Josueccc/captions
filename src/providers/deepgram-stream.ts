@@ -1,6 +1,7 @@
 import type { Segment, Word } from '../shared/types';
 import { SAMPLE_RATE } from '../shared/types';
 import type { Transcriber, TranscriberEvents } from './types';
+import { t } from '../shared/i18n';
 
 /** Deepgram closes idle streams after ~10 s without audio. */
 const KEEPALIVE_MS = 4000;
@@ -119,7 +120,7 @@ class Connection {
     ws.onclose = (event) => {
       clearInterval(this.keepAliveTimer);
       this.closeLine();
-      if (!this.closing) owner.failed(event.reason || (event.code === 1006 ? target.connectError : `Connection closed (code ${event.code}).`));
+      if (!this.closing) owner.failed(event.reason || (event.code === 1006 ? target.connectError : t('errorConnectionClosed', event.code)));
     };
   }
 
@@ -163,7 +164,7 @@ class Connection {
       return;
     }
     if (msg.type === 'Error') {
-      this.owner.failed(msg.description || msg.message || 'Transcription error');
+      this.owner.failed(msg.description || msg.message || t('errorTranscription'));
       return;
     }
     if (msg.type !== 'Results') return;
@@ -269,7 +270,7 @@ export class DeepgramStream implements Transcriber {
 
   stalled(connection: Connection): void {
     if (connection !== this.connection || this.stopped || !this.target.restartOnStall) return;
-    console.warn('[captions] transcription stream stalled; reconnecting');
+    console.warn('[auris] transcription stream stalled; reconnecting');
     this.reconnect();
   }
 
@@ -284,4 +285,38 @@ export class DeepgramStream implements Transcriber {
   nextLineId(): string {
     return `${this.target.idPrefix}-${this.lineCount++}`;
   }
+}
+
+/** How long a connection test waits for the handshake. */
+const PROBE_TIMEOUT_MS = 8000;
+
+/**
+ * Opens a stream and closes it again without sending audio, to check the URL,
+ * credentials and parameters from the settings page. Rejects with the server's
+ * reason, or with `target.connectError` when there's none.
+ */
+export function probe(target: Pick<DeepgramTarget, 'url' | 'protocols' | 'connectError'>): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let ws: WebSocket;
+    try {
+      ws = new WebSocket(target.url, target.protocols);
+    } catch (err) {
+      reject(err instanceof Error ? err : new Error(String(err)));
+      return;
+    }
+    const timer = setTimeout(() => {
+      ws.close();
+      reject(new Error(target.connectError));
+    }, PROBE_TIMEOUT_MS);
+    ws.onopen = () => {
+      clearTimeout(timer);
+      ws.send(JSON.stringify({ type: 'CloseStream' }));
+      ws.close();
+      resolve();
+    };
+    ws.onclose = (event) => {
+      clearTimeout(timer);
+      reject(new Error(event.reason || target.connectError));
+    };
+  });
 }
